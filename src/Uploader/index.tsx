@@ -4,8 +4,16 @@ import type { UploadProps } from 'antd';
 import type { UploadFile, UploadChangeParam } from 'antd/es/upload/interface';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
+import { noop, IOSSData, getExtraData, OSS } from '@/utils';
 
 export type UploaderProps = {
+  oss?: boolean;
+  // OSS 配置数据
+  OSSData: IOSSData;
+  /**
+   * getOSSData 获取 OSS 配置数据
+   */
+  getOSSData?: () => Promise<IOSSData>;
   /**
    * value
    * @description       文件的路径
@@ -41,6 +49,7 @@ export type UploaderProps = {
 };
 
 const defaultProps = {
+  getOSSConfig: noop,
   signSize: 200,
   crop: false,
   exts: ['jpg', 'jpeg', 'png'],
@@ -54,10 +63,9 @@ const defaultUploadProps = {
 const Uploader = (originProps: UploaderProps) => {
   const [fileList, setFileList] = useState<Array<UploadFile>>([]);
   const [uploading, setUploading] = useState(false);
+  const [data, setData] = useState<any>({});
 
   const props = Object.assign({ ...defaultProps }, originProps);
-  Object.assign(props, { ...defaultProps });
-
   const { value = [], onChange, exts = [], signSize = 200, crop } = props;
   const uploadProps = Object.assign(
     { ...defaultUploadProps },
@@ -123,10 +131,16 @@ const Uploader = (originProps: UploaderProps) => {
     return '';
   };
 
-  const beforeUpload = (file: File) => {
+  const beforeUpload = async (file: File) => {
+    const { getOSSData, OSSData, oss } = props;
     const ext = getFileExtendingName(file.name);
     const isType = exts.includes(ext);
     const isSize = file.size / 1024 < signSize;
+    // 获取 OSS 数据
+    if (oss && isType && isSize) {
+      const data = await getExtraData(file, oss);
+      setData(data);
+    }
 
     if (!isType) {
       message.error(`${file.name} 文件格式不正确`);
@@ -143,6 +157,7 @@ const Uploader = (originProps: UploaderProps) => {
     const props = {
       onChange: change,
       beforeUpload: beforeUpload,
+      data: data,
       ...uploadProps,
     };
 
@@ -186,7 +201,7 @@ const Uploader = (originProps: UploaderProps) => {
 
     return <Upload {...props}>{UploadBtn()}</Upload>;
   };
-
+  console.log('render');
   return (
     <>{crop ? <ImgCrop rotate>{originUpload()}</ImgCrop> : originUpload()}</>
   );

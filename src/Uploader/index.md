@@ -17,28 +17,27 @@ nav:
 ### 基本用法 单个
 
 ```tsx
-import React from "react";
-import {Row, Col} from 'antd'
-import { Uploader } from 'components'
-import "antd/dist/antd.css";
+import React from 'react';
+import { Row, Col } from 'antd';
+import { Uploader } from '@zhou.lang/components';
+import 'antd/dist/antd.css';
 
 const Demo = () => {
   const request = ({
-                     action,
-                     data,
-                     file,
-                     filename,
-                     onError,
-                     onProgress,
-                     onSuccess,
-                     withCredentials
-                   }) => {
+    action,
+    data,
+    file,
+    filename,
+    onError,
+    onProgress,
+    onSuccess,
+    withCredentials,
+  }) => {
     // setUploading(true);
     console.log(file, filename, withCredentials);
     setTimeout(() => {
       onSuccess({
-        url:
-          "https://gw.alipayobjects.com/zos/rmsportal/uHAzKpIQDMGdmjIxZLOV.png"
+        url: 'https://gw.alipayobjects.com/zos/rmsportal/uHAzKpIQDMGdmjIxZLOV.png',
       });
       // setUploading(false);
     }, 2000);
@@ -47,19 +46,27 @@ const Demo = () => {
     <Row gutter={20}>
       <Col span={12}>
         <Uploader
-          uploadProps={{customRequest: request}}
+          uploadProps={{ customRequest: request }}
           customRequest={request}
-          value={'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
-          exts={["png", "jpeg"]}
+          value={
+            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+          }
+          exts={['png', 'jpeg']}
           signSize={200}
           crop={false}
         />
       </Col>
       <Col span={12}>
         <Uploader
-          uploadProps={{listType: 'picture-card', showUploadList: false, customRequest: request}}
-          value={'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
-          exts={["png", "jpeg"]}
+          uploadProps={{
+            listType: 'picture-card',
+            showUploadList: false,
+            customRequest: request,
+          }}
+          value={
+            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+          }
+          exts={['png', 'jpeg']}
           signSize={200}
           crop={false}
         />
@@ -68,54 +75,71 @@ const Demo = () => {
   );
 };
 
-export default Demo
+export default Demo;
 ```
 
 ### 基本用法 多个
 
 ```tsx
-import React from "react";
-import {Row, Col} from 'antd'
-import { Uploader } from 'components'
-import "antd/dist/antd.css";
+import React from 'react';
+import { Row, Col } from 'antd';
+import { Uploader } from '@zhou.lang/components';
+import 'antd/dist/antd.css';
 
 const Demo = () => {
   const request = ({
-                     action,
-                     data,
-                     file,
-                     filename,
-                     onError,
-                     onProgress,
-                     onSuccess,
-                     withCredentials
-                   }) => {
+    action,
+    data,
+    file,
+    filename,
+    onError,
+    onProgress,
+    onSuccess,
+    withCredentials,
+  }) => {
     // setUploading(true);
     console.log(file, filename, withCredentials);
     setTimeout(() => {
       onSuccess({
-        url:
-          "https://gw.alipayobjects.com/zos/rmsportal/uHAzKpIQDMGdmjIxZLOV.png"
+        url: 'https://gw.alipayobjects.com/zos/rmsportal/uHAzKpIQDMGdmjIxZLOV.png',
       });
       // setUploading(false);
     }, 2000);
   };
+
+  function getOSSData() {
+    return fetch('http://daily.api.beicaizs.com/compliance/oss/policy', {
+      headers: { token: '684ae22e891f46da82290e26cc377ab1' },
+    })
+      .then((res) => res.json())
+      .then((data) => data.data);
+  }
   return (
     <Row gutter={20}>
       <Col span={12}>
         <Uploader
-          uploadProps={{customRequest: request, maxCount: 3}}
-          value={'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
-          exts={["png", "jpeg"]}
+          uploadProps={{ customRequest: request, maxCount: 3 }}
+          value={
+            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+          }
+          exts={['png', 'jpeg']}
           signSize={200}
           crop={false}
         />
       </Col>
       <Col span={12}>
         <Uploader
-          uploadProps={{listType: 'picture-card', customRequest: request, maxCount: 3}}
-          value={'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'}
-          exts={["png", "jpeg"]}
+          getOSSData={getOSSData}
+          uploadProps={{
+            listType: 'picture-card',
+            // customRequest: request,
+            maxCount: 3,
+            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
+          }}
+          value={
+            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+          }
+          exts={['png', 'jpeg']}
           signSize={200}
           crop={false}
         />
@@ -124,77 +148,77 @@ const Demo = () => {
   );
 };
 
-export default Demo
+export default Demo;
 ```
 
-### 结合antd表单校验使用
+### 结合 antd 表单校验使用
 
 ```tsx
-  import React, { useState } from "react";
-  import { Form, Button,  message } from "antd";
-  import { Uploader } from 'components'
-  import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-  import "antd/dist/antd.css";
-  const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 20 },
-  };
-  const tailLayout = {
-    wrapperCol: { offset: 4, span: 20 },
-  };
-
+import React, { useState } from 'react';
+import { Form, Button, message } from 'antd';
+import { Uploader } from '@zhou.lang/components';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import 'antd/dist/antd.css';
+const layout = {
+  labelCol: { span: 4 },
+  wrapperCol: { span: 20 },
+};
+const tailLayout = {
+  wrapperCol: { offset: 4, span: 20 },
+};
 
 const Demo = () => {
   const onFinish = (values) => {
-    console.log("Received values from form: ", values);
+    console.log('Received values from form: ', values);
   };
   const [form] = Form.useForm();
-  
+
   setTimeout(() => {
     form.setFieldsValue({
-      avatar: 
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+      avatar:
+        'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
       projects: [
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+        'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
       ],
-      projectsFile: []
-      
+      projectsFile: [],
     });
-  }, 1000);
+  }, 2000);
   // uploadProps={{ disabled: true }}
   return (
     <Form
       form={form}
       name="customized_form_controls"
       onFinish={onFinish}
-      initialValues={{}}
+      initialValues={{
+        avatar: 'https://t7.baidu.com/it/u=2168645659,3174029352&fm=193&f=GIF',
+      }}
       {...layout}
     >
       <Form.Item
         name="avatar"
         label="个人头像"
         extra="只能上传 png 图片"
-        rules={[{ required: true, message: "required" }]}
+        rules={[{ required: true, message: 'required' }]}
       >
         <Uploader
-          uploadProps={{listType: 'picture-card', maxCount: 1}}
-          exts={["png", "jpeg"]}
+          uploadProps={{
+            listType: 'picture-card',
+            maxCount: 1,
+            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
+          }}
+          exts={['png', 'jpeg']}
           signSize={200}
           crop={false}
         />
       </Form.Item>
 
-      <Form.Item
-        name="projects"
-        label="项目图标"
-        extra="只能上传 png 图片"
-      >
+      <Form.Item name="projects" label="项目图标" extra="只能上传 png 图片">
         <Uploader
-          uploadProps={{listType: 'picture-card', maxCount: 5}}
-          exts={["png", "jpeg"]}
+          uploadProps={{ listType: 'picture-card', maxCount: 5 }}
+          exts={['png', 'jpeg']}
           signSize={200}
           crop={false}
         />
@@ -206,9 +230,9 @@ const Demo = () => {
         extra="只能上传 pdf 或 doc 文件"
       >
         <Uploader
-          uploadProps={{ maxCount: 5}}
+          uploadProps={{ maxCount: 5 }}
           maxCount={5}
-          exts={["pdf", "doc"]}
+          exts={['pdf', 'doc']}
           signSize={200}
           crop={false}
         />
@@ -224,21 +248,18 @@ const Demo = () => {
   );
 };
 
-  export default Demo
+export default Demo;
 ```
 
 ### API
 
 #### Uploder
 
-| 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| value | 文件的路径 | `string \| string[]` | -- |
-| exts | 可以上传的文件扩展名 | `string[]` | `['jpg', 'jpeg', 'png']` |
-| signSize | 单个文件的最大尺寸 单位： `KB` | `number` | `200` |
-| crop | 是否需要对文件进行裁剪 | `boolean` | `false` |
-| uploadProps | antd 的 [uploadProps](https://ant.design/components/upload-cn/#API) | `UploadProps<any>` | `{ listType: 'text', maxCount: 1 }` |
-| onChange | 只有在上传的文件状态为 `done`时触发， 和 `antd`中`upload`的 `onChange`不一样 | `(urls: string \| string[]) => void` | -- |
-
-
-
+| 参数        | 说明                                                                         | 类型                                 | 默认值                              |
+| ----------- | ---------------------------------------------------------------------------- | ------------------------------------ | ----------------------------------- |
+| value       | 文件的路径                                                                   | `string \| string[]`                 | --                                  |
+| exts        | 可以上传的文件扩展名                                                         | `string[]`                           | `['jpg', 'jpeg', 'png']`            |
+| signSize    | 单个文件的最大尺寸 单位： `KB`                                               | `number`                             | `200`                               |
+| crop        | 是否需要对文件进行裁剪                                                       | `boolean`                            | `false`                             |
+| uploadProps | antd 的 [uploadProps](https://ant.design/components/upload-cn/#API)          | `UploadProps<any>`                   | `{ listType: 'text', maxCount: 1 }` |
+| onChange    | 只有在上传的文件状态为 `done`时触发， 和 `antd`中`upload`的 `onChange`不一样 | `(urls: string \| string[]) => void` | --                                  |

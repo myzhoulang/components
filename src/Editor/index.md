@@ -20,7 +20,7 @@ nav:
   import React, { useState } from "react";
   import { Form, Button } from "antd";
   import "antd/dist/antd.css";
-  import { Editor } from "components";
+  import { Editor } from "@zhou.lang/components";
   const layout = {
     labelCol: { span: 4 },
     wrapperCol: { span: 20 },
@@ -37,7 +37,7 @@ nav:
           method: 'GET', // or 'PUT'
           headers: new Headers({
             'Content-Type': 'application/json',
-            'token': 'dab8ae1f7ac64bdc921b693714c24d62'
+            'token': 'da17f488cf584758a60d3c5d1f578b34'
           })
         })
         .then(response => response.json())

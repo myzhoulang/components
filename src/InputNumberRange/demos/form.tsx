@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Form, Button } from 'antd';
-import { InputNumberRange } from 'components';
+import { InputNumberRange } from '@zhou.lang/components';
 
 export default () => {
   const onFinish = (values) => {
