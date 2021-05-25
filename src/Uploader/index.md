@@ -14,7 +14,6 @@ nav:
 
 ## 代码示例
 
-<!--
 ### 基本用法 限制一个文件
 
 ```tsx
@@ -137,9 +136,9 @@ const Demo = () => {
 };
 
 export default Demo;
-``` -->
+```
 
-<!-- ### 自定义请求方法
+### 自定义请求方法
 
 ```tsx
 import React from 'react';
@@ -223,7 +222,7 @@ const Demo = () => {
 };
 
 export default Demo;
-``` -->
+```
 
 ### 结合 antd 表单校验使用
 
@@ -284,6 +283,24 @@ const Demo = () => {
           }}
           {...layout}
         >
+          <Form.Item
+            name="avatar"
+            label="个人头像"
+            extra="只能上传 png 图片"
+            rules={[{ required: true, message: 'required' }]}
+          >
+            <Uploader
+              oss={oss}
+              uploadProps={{
+                listType: 'picture-card',
+                maxCount: 1,
+                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
+              }}
+              exts={['png', 'jpeg']}
+              signSize={200}
+              crop={false}
+            />
+          </Form.Item>
           <Form.Item name="projects" label="项目图标" extra="只能上传 png 图片">
             <Uploader
               oss={oss}
@@ -297,23 +314,23 @@ const Demo = () => {
               crop={false}
             />
           </Form.Item>
-          {/*<Form.Item
-        name="projectsFile"
-        label="项目文件"
-        extra="只能上传 pdf 或 doc 文件"
-      >
-        <Uploader
-          oss={oss}
-          uploadProps={{
-            maxCount: 5,
-            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-          }}
-          maxCount={5}
-          exts={['pdf', 'docx']}
-          signSize={200}
-          crop={false}
-        />
-      </Form.Item>*/}
+          <Form.Item
+            name="projectsFile"
+            label="项目文件"
+            extra="只能上传 pdf 或 doc 文件"
+          >
+            <Uploader
+              oss={oss}
+              uploadProps={{
+                maxCount: 5,
+                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
+              }}
+              maxCount={5}
+              exts={['pdf', 'docx']}
+              signSize={200}
+              crop={false}
+            />
+          </Form.Item>
 
           <Form.Item {...tailLayout}>
             <Space>
