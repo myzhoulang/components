@@ -1,22 +1,34 @@
 import React, { useMemo } from 'react';
+import type { UploadProps } from 'antd';
 import BraftEditor, {
   BraftEditorProps,
   EditorState,
   MediaType,
 } from 'braft-editor';
 import 'braft-editor/dist/index.css';
-import { defaultUpload, UploadProps, Params } from '../utils';
+import { getExtraData, Params, OSS, KeyValue, UploadExtraData } from '../utils';
 import styles from './index.less';
 
 type EditorProps = {
   value?: EditorState;
   onChange?: (editorState: EditorState) => void;
   braftEditorProps?: BraftEditorProps;
-  upload?: UploadProps;
+  upload?: UploadProps & {
+    customUpload?: (data: KeyValue) => Promise<any>;
+    action?: string;
+  };
+  oss?: OSS;
 };
 
 const Editor: React.FC<EditorProps> = (props) => {
-  const { value, onChange, upload = {}, braftEditorProps = {} } = props;
+  const {
+    value,
+    onChange,
+    upload = {},
+    braftEditorProps = {},
+    oss = {},
+  } = props;
+
   const editorState = useMemo(() => {
     if (typeof value === 'string') {
       return BraftEditor.createEditorState(value);
@@ -33,39 +45,64 @@ const Editor: React.FC<EditorProps> = (props) => {
 
   const uploadFn: MediaType['uploadFn'] = async (param: Params) => {
     try {
-      const xhr = await defaultUpload(param.file, {
-        upload: upload,
-        onProgress(event: ProgressEvent) {
-          param.progress((event.loaded / event.total) * 100);
-        },
-        onSuccess() {
-          // 假设服务端直接返回文件上传后的地址
-          // 上传成功后调用param.success并传入上传后的文件地址
-          try {
-            const res = JSON.parse(xhr.response);
-            const url = `${xhr.responseURL}${res.filename}`;
-            param.success({
-              url: url,
-              meta: {
-                id: 'xxx',
-                title: 'xxx',
-                alt: 'xxx',
-                loop: true, // 指定音视频是否循环播放
-                autoPlay: true, // 指定音视频是否自动播放
-                controls: true, // 指定音视频是否显示控制栏
-                poster: 'http://xxx/xx.png', // 指定视频播放器的封面
-              },
-            });
-          } catch (e) {
-            console.log(e);
-          }
-        },
-        onError() {
-          param.error({
-            msg: '上传失败',
-          });
-        },
+      const ossData = await getExtraData(param.file, oss);
+      const form = new FormData();
+      const xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+
+      function onProgress(event: ProgressEvent) {
+        param.progress((event.loaded / event.total) * 100);
+      }
+
+      function onSuccess(data: any) {
+        param.success({
+          url: (ossData as UploadExtraData)?.url,
+          meta: {
+            id: '',
+            title: '',
+            alt: '',
+            loop: true, // 指定音视频是否循环播放
+            autoPlay: true, // 指定音视频是否自动播放
+            controls: true, // 指定音视频是否显示控制栏
+            poster: '', // 指定视频播放器的封面
+          },
+        });
+      }
+
+      function onError() {
+        param.error({
+          msg: '上传失败',
+        });
+      }
+
+      function onAbort() {}
+
+      // 判断是否 OSS 上传还是自定义上传
+      if (typeof upload.customUpload === 'function') {
+        return upload.customUpload(form);
+      }
+
+      if (!upload.action) {
+        console.error('使用默认上传方法需要 action 地址');
+        return;
+      }
+
+      if (!ossData) {
+        return;
+      }
+
+      Object.entries(ossData).forEach(([key, value]) => {
+        form.append(key, value);
       });
+
+      form.append('file', param.file);
+      xhr.open('POST', upload.action, true);
+      xhr.send(form);
+
+      xhr.upload.addEventListener('progress', onProgress, false);
+      xhr.addEventListener('load', onSuccess, false);
+      xhr.addEventListener('error', onError, false);
+      xhr.addEventListener('abort', onAbort, false);
     } catch (error) {
       console.error('上传失败 ===》 ', error);
     }

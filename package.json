@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
+    "ahooks": "^2.10.4",
     "antd": "^4.15.5",
     "antd-img-crop": "^3.14.1",
     "braft-editor": "^2.3.9",

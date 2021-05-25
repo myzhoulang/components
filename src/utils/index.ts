@@ -1,9 +1,12 @@
+import { message, Upload } from 'antd';
+import type { UploadProps } from 'antd';
 import SparkMD5 from 'spark-md5';
 
 export type OSS = {
+  OSSHeader?: Headers;
   OSSData?: IOSSData;
   OSSAction?: string;
-  getOSSData?: (OSSAction: string) => Promise<IOSSData>;
+  getOSSData?: () => Promise<IOSSData>;
 };
 
 export type Options = {
@@ -14,6 +17,7 @@ export type Options = {
   data?: Map<string, any>;
   header?: Map<string, any>;
   upload?: UploadProps;
+  oss?: OSS;
 };
 
 export const noop = () => {};
@@ -52,16 +56,22 @@ export type KeyValue = {
   [key: string]: any;
 };
 
-// 上传文件的 props
-export type UploadProps = {
-  // 获取 OSS 信息的方法
-  getOSSData?: () => Promise<IOSSData>;
-  // OSS 信息
-  OSSData?: IOSSData;
-  // 自定义上传文件方法
-  customUpload?: (fd: FormData, params?: Params) => Promise<any>;
-  // 默认上传文件的地址
-  serverUrl?: string;
+// // 上传文件的 props
+// export type UploadProps = {
+//   // 自定义上传文件方法
+//   customUpload?: (fd: FormData, params?: Params) => Promise<any>;
+//   // 默认上传文件的地址
+//   serverUrl?: string;
+// };
+
+// 默认获取 oss 配置方法
+// 当需要获取oss配置数据的时候，只提供了一个获取 oss 配置的 api 时使用
+const getOSSDataForAction = (url: string, header?: Headers) => {
+  return fetch(url, {
+    headers: header,
+  })
+    .then((res) => res.json())
+    .then((data) => data.data);
 };
 
 /**
@@ -89,16 +99,21 @@ const getMD5 = (file: File) => {
 /**
  * 获取文件上传到OSS的配置
  * @returns Promise<IOSSData> OSS 配置
+ * getOSSData > OSSAction > OSSData
  */
 const getSignature = (oss: OSS) => {
-  const { getOSSData, OSSData, OSSAction = '/compliance/oss/policy' } = oss;
+  const { getOSSData, OSSData, OSSAction, OSSHeader } = oss;
 
-  if (typeof getOSSData !== 'function' && !OSSData) {
-    return Promise.reject({ message: '缺少OSS数据或获取OSS数据的方法' });
+  // 没有提供 OSS 配置数据  并且 没有获取 OSS 配置数据的方法 并且也没有获取 OSSAction 的服务器地址
+  // 就认为 获取不到 OSS 配置数据就认为获取 OSS 配置失败
+  if (typeof getOSSData !== 'function' && !OSSData && !OSSAction) {
+    return Promise.reject({
+      message: '缺少OSS数据或获取OSS数据的方法或缺少获取OSS配置的服务器地址',
+    });
   }
 
   if (typeof getOSSData === 'function') {
-    return getOSSData(OSSAction)
+    return getOSSData()
       .then((data: IOSSData) => {
         return data;
       })
@@ -106,6 +121,8 @@ const getSignature = (oss: OSS) => {
         console.error(e);
         return Promise.reject(e);
       });
+  } else if (typeof OSSAction === 'string') {
+    return getOSSDataForAction(OSSAction, OSSHeader);
   }
 
   return OSSData ? Promise.resolve(OSSData) : Promise.reject('缺少OSS数据');
@@ -117,21 +134,27 @@ const getSignature = (oss: OSS) => {
  * @param upload 上传的配置
  * @returns Promise<IOSSData> OSS 配置
  */
-export const getExtraData = async (
+export type UploadExtraData = {
+  url: string;
+  key: string;
+  OSSAccessKeyId: string;
+  policy: string;
+  Signature: string;
+  callback: string;
+};
+export const getExtraData: (
   file: File & { url?: string; path?: string },
   oss: OSS,
-) => {
+) => Promise<UploadExtraData | void> = async (file, oss) => {
   const ext = file.name.substr(file.name.lastIndexOf('.'));
 
   return Promise.all([getMD5(file), getSignature(oss)])
     .then(([md5, oss]) => {
       const { dir, host, accessId, policy, signature, callback } = oss;
       const path = `${dir}${md5}${ext}`;
-      file.path = path;
       file.url = `${host}/${dir}${md5}${ext}`;
       return {
-        // file: file,
-        url: `${host}/${dir}${md5}${ext}`,
+        url: file.url,
         key: path,
         OSSAccessKeyId: accessId,
         policy: policy,
@@ -144,58 +167,42 @@ export const getExtraData = async (
     });
 };
 
-/**
- *  默认文件上传方法
- * @param data 上传文件
- * @param options 上传配置
- */
-export async function defaultUpload(file: File, options: Options = {}) {
-  const {
-    onProgress = noop,
-    onSuccess = noop,
-    onError = noop,
-    onAbort = noop,
-    upload = {},
-    data = new Map(),
-    header = new Map(),
-  } = options;
-
-  // 获取信息
-  try {
-    const fd = new FormData();
-    const res = await getExtraData(file, upload || {});
-    const xhr = new XMLHttpRequest();
-
-    if (res) {
-      fd.append('key', res.key);
-      fd.append('OSSAccessKeyId', res.OSSAccessKeyId);
-      fd.append('policy', res.policy);
-      fd.append('Signature', res.Signature);
-      fd.append('file', file);
-      fd.append('callback', res.callback);
-    }
-    // 添加额外的数据
-    for (let [key, value] of data) {
-      fd.append(key, value);
-    }
-
-    // 判断是否 OSS 上传还是自定义上传
-    if (typeof upload.customUpload === 'function') {
-      return upload.customUpload(fd);
-    }
-    if (!upload.serverUrl) {
-      console.error('使用默认上传方法需要 server 地址');
-      return;
-    }
-    xhr.open('POST', upload.serverUrl, true);
-    // xhr.setRequestHeader()
-    xhr.send(fd);
-
-    xhr.upload.addEventListener('progress', onProgress, false);
-    xhr.addEventListener('load', onSuccess, false);
-    xhr.addEventListener('error', onError, false);
-    xhr.addEventListener('abort', onAbort, false);
-  } catch (error) {
-    console.log(error);
+const getFileExtendingName = (filename: string = '') => {
+  const ext = filename.slice(filename.lastIndexOf('.') + 1);
+  if (ext) {
+    return ext.toLocaleLowerCase();
   }
-}
+  return '';
+};
+
+// 上传之前的拦截
+type UploadValid = {
+  exts?: Array<string>;
+  signSize?: number;
+  multiple?: boolean;
+};
+export const uploadValid = (file: File, config?: UploadValid) => {
+  const conf = Object.assign(
+    { exts: [], signSize: 200, multiple: false },
+    config,
+  );
+  const ext = getFileExtendingName(file.name);
+  const isType = conf?.exts?.includes(ext);
+  const isSize = file.size / 1024 < conf?.signSize;
+
+  if (!isType) {
+    message.error(`${file.name} 文件格式不正确`);
+    return Upload.LIST_IGNORE;
+  }
+
+  if (!isSize) {
+    message.error(`${file.name} size 不能大于 ${conf?.signSize} KB`);
+    return Upload.LIST_IGNORE;
+  }
+
+  return true;
+};
+
+export default {
+  getExtraData,
+};

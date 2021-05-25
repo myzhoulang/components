@@ -4,16 +4,11 @@ import type { UploadProps } from 'antd';
 import type { UploadFile, UploadChangeParam } from 'antd/es/upload/interface';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
-import { noop, IOSSData, getExtraData, OSS } from '@/utils';
+import { noop, IOSSData, getExtraData, OSS, uploadValid } from '@/utils';
 
 export type UploaderProps = {
-  oss?: boolean;
-  // OSS 配置数据
-  OSSData: IOSSData;
-  /**
-   * getOSSData 获取 OSS 配置数据
-   */
-  getOSSData?: () => Promise<IOSSData>;
+  // 获取OSS 配置数据
+  oss?: OSS;
   /**
    * value
    * @description       文件的路径
@@ -64,6 +59,7 @@ const Uploader = (originProps: UploaderProps) => {
   const [fileList, setFileList] = useState<Array<UploadFile>>([]);
   const [uploading, setUploading] = useState(false);
   const [data, setData] = useState<any>({});
+  const isTriggerChange = useRef(false);
 
   const props = Object.assign({ ...defaultProps }, originProps);
   const { value = [], onChange, exts = [], signSize = 200, crop } = props;
@@ -73,14 +69,14 @@ const Uploader = (originProps: UploaderProps) => {
   );
 
   const maxCount = uploadProps.maxCount;
-  const ref = useRef(true);
   const isSign = maxCount === 1;
 
   useEffect(() => {
     if (
       (typeof value === 'string' && value) ||
-      (Array.isArray(value) && value.length > 0 && ref.current)
+      (Array.isArray(value) && value.length > 0 && !isTriggerChange.current)
     ) {
+      console.log('useEffect');
       let fileList: Array<UploadFile> = [];
       if (Array.isArray(value)) {
         fileList = value.map((item) => {
@@ -104,14 +100,14 @@ const Uploader = (originProps: UploaderProps) => {
           },
         ];
       }
-
-      ref.current = false;
       setFileList(fileList);
     }
   }, [value]);
 
   const change = ({ fileList }: UploadChangeParam) => {
+    console.log('value change');
     setFileList(fileList);
+    isTriggerChange.current = true;
     const signFile = fileList[0];
     if (isSign && signFile.status === 'done') {
       const url = signFile.url || signFile.response.url;
@@ -123,34 +119,22 @@ const Uploader = (originProps: UploaderProps) => {
     }
   };
 
-  const getFileExtendingName = (filename: string = '') => {
-    const ext = filename.slice(filename.lastIndexOf('.') + 1);
-    if (ext) {
-      return ext.toLocaleLowerCase();
-    }
-    return '';
-  };
-
   const beforeUpload = async (file: File) => {
-    const { getOSSData, OSSData, oss } = props;
-    const ext = getFileExtendingName(file.name);
-    const isType = exts.includes(ext);
-    const isSize = file.size / 1024 < signSize;
-    // 获取 OSS 数据
-    if (oss && isType && isSize) {
-      const data = await getExtraData(file, oss);
-      setData(data);
+    const { oss, uploadProps } = props;
+    const result = uploadValid(file, {
+      exts,
+      signSize,
+      multiple: uploadProps?.multiple ?? false,
+    });
+    if (result === true) {
+      // 没有自定义方法
+      if (oss && !uploadProps?.customRequest) {
+        const data = await getExtraData(file, oss);
+        setData(data);
+      }
     }
 
-    if (!isType) {
-      message.error(`${file.name} 文件格式不正确`);
-      return isType ? true : Upload.LIST_IGNORE;
-    }
-
-    if (!isSize) {
-      message.error(`${file.name} size 不能大于 ${signSize} KB`);
-      return isSize ? true : Upload.LIST_IGNORE;
-    }
+    return result;
   };
 
   const originUpload = () => {
@@ -164,6 +148,7 @@ const Uploader = (originProps: UploaderProps) => {
     let signUrl: string;
     if (isSign && uploadProps.listType === 'picture-card') {
       signUrl = fileList[0]?.url || fileList[0]?.response?.url;
+      props.showUploadList = false;
     } else {
       props.fileList = fileList;
     }
@@ -198,10 +183,9 @@ const Uploader = (originProps: UploaderProps) => {
         return <Button icon={<PlusOutlined />}>Upload</Button>;
       }
     };
-
     return <Upload {...props}>{UploadBtn()}</Upload>;
   };
-  console.log('render');
+
   return (
     <>{crop ? <ImgCrop rotate>{originUpload()}</ImgCrop> : originUpload()}</>
   );

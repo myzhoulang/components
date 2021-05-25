@@ -14,7 +14,6 @@ nav:
 
 ## 代码示例
 
-<!--
 ### 基本用法 限制一个文件
 
 ```tsx
@@ -137,9 +136,9 @@ const Demo = () => {
 };
 
 export default Demo;
-``` -->
+```
 
-<!-- ### 自定义请求方法
+### 自定义请求方法
 
 ```tsx
 import React from 'react';
@@ -223,13 +222,13 @@ const Demo = () => {
 };
 
 export default Demo;
-``` -->
+```
 
 ### 结合 antd 表单校验使用
 
 ```tsx
-import React, { useState, useEffect } from 'react';
-import { Form, Button, message, Space, Row, Col, Input } from 'antd';
+import React, { useState } from 'react';
+import { Form, Button, message } from 'antd';
 import { Uploader } from '@zhou.lang/components';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
@@ -240,64 +239,70 @@ const layout = {
 const tailLayout = {
   wrapperCol: { offset: 4, span: 20 },
 };
-const { TextArea } = Input;
-const Demo = () => {
-  const [form] = Form.useForm();
-  const [value, setValue] = useState({});
-  const [projectId] = useState(1);
 
+const Demo = () => {
   const onFinish = (values) => {
     console.log('Received values from form: ', values);
   };
+  const [form] = Form.useForm();
 
   const oss = {
     OSSHeader: { token: '1e0bb8ae06ed4a8ba1e9c18f0b740c09' },
     OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      console.log(11);
-      form.setFieldsValue({
-        avatar: '',
-        projects: [
-          'https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg',
-        ],
-        projectsFile: [],
-      });
-    }, 2000);
-  }, [projectId]);
-
+  setTimeout(() => {
+    form.setFieldsValue({
+      avatar: '',
+      projects: [],
+      projectsFile: [],
+    });
+  }, 2000);
   // uploadProps={{ disabled: true }}
   return (
-    <Row>
-      <Col span={12}>
-        <Form
-          form={form}
-          name="customized_form_controls"
-          onFinish={onFinish}
-          initialValues={{
-            avatar: '',
-            projects: [
-              'https://t7.baidu.com/it/u=2531125946,3055766435&fm=193&f=GIF',
-            ],
+    <Form
+      form={form}
+      name="customized_form_controls"
+      onFinish={onFinish}
+      initialValues={{
+        avatar: '',
+      }}
+      {...layout}
+    >
+      <Form.Item
+        name="avatar"
+        label="个人头像"
+        extra="只能上传 png 图片"
+        rules={[{ required: true, message: 'required' }]}
+      >
+        <Uploader
+          oss={oss}
+          uploadProps={{
+            listType: 'picture-card',
+            maxCount: 1,
+            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
           }}
-          {...layout}
-        >
-          <Form.Item name="projects" label="项目图标" extra="只能上传 png 图片">
-            <Uploader
-              oss={oss}
-              uploadProps={{
-                listType: 'picture-card',
-                maxCount: 5,
-                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-              }}
-              exts={['png', 'jpeg']}
-              signSize={200}
-              crop={false}
-            />
-          </Form.Item>
-          {/*<Form.Item
+          exts={['png', 'jpeg']}
+          signSize={200}
+          crop={false}
+        />
+      </Form.Item>
+
+      <Form.Item name="projects" label="项目图标" extra="只能上传 png 图片">
+        <Uploader
+          oss={oss}
+          uploadProps={{
+            listType: 'picture-card',
+            maxCount: 5,
+            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
+          }}
+          exts={['png', 'jpeg']}
+          signSize={200}
+          crop={false}
+        />
+      </Form.Item>
+
+      <Form.Item
         name="projectsFile"
         label="项目文件"
         extra="只能上传 pdf 或 doc 文件"
@@ -313,27 +318,15 @@ const Demo = () => {
           signSize={200}
           crop={false}
         />
-      </Form.Item>*/}
+      </Form.Item>
 
-          <Form.Item {...tailLayout}>
-            <Space>
-              <Button type="primary" htmlType="submit">
-                Submit1
-              </Button>
-              <Button htmlType="reset" onClick={() => form.resetFields()}>
-                reset
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form>
-      </Col>
-      <Col span={12}>
-        <TextArea rows={12} value={JSON.stringify(value)}></TextArea>
-        <Button onClick={() => setValue(form.getFieldsValue(true))}>
-          Get Form Value
+      <Form.Item {...tailLayout}>
+        <Button type="primary" htmlType="submit">
+          Submit1
         </Button>
-      </Col>
-    </Row>
+        <Button></Button>
+      </Form.Item>
+    </Form>
   );
 };
 
