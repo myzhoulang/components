@@ -32,7 +32,7 @@ const tailLayout = {
 const Demo = () => {
   const oss = {
     // getOSSData: getOSSData,
-    OSSHeader: { token: 'c0365260778d4065bf57a717c9591043' },
+    OSSHeader: { token: 'cdf1d5c3f24341c08e2904395191cfb7' },
     OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
   };
   const uploadProps = {

@@ -154,12 +154,12 @@ export const getExtraData: (
       const path = `${dir}${md5}${ext}`;
       file.url = `${host}/${dir}${md5}${ext}`;
       return {
-        url: file.url,
         key: path,
         OSSAccessKeyId: accessId,
         policy: policy,
         Signature: signature,
         callback: callback,
+        url: file.url,
       };
     })
     .catch((e) => {

@@ -93,7 +93,7 @@ const Demo = () => {
         <Uploader
           oss={{
             // getOSSData: getOSSData,
-            OSSHeader: { token: '1e0bb8ae06ed4a8ba1e9c18f0b740c09' },
+            OSSHeader: { token: 'cdf1d5c3f24341c08e2904395191cfb7' },
             OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
           }}
           uploadProps={{
@@ -114,14 +114,14 @@ const Demo = () => {
         <Uploader
           oss={{
             // getOSSData: getOSSData,
-            OSSHeader: { token: '1e0bb8ae06ed4a8ba1e9c18f0b740c09' },
+            OSSHeader: { token: 'cdf1d5c3f24341c08e2904395191cfb7' },
             OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
           }}
           uploadProps={{
             listType: 'picture-card',
             maxCount: 3,
             multiple: true,
-            action: 'https://beicai-test.2oss-cn-hangzhou.aliyuncs.com/',
+            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
           }}
           value={
             'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
