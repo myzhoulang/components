@@ -136,6 +136,8 @@ const getSignature = (oss: OSS) => {
  * @returns Promise<IOSSData> OSS 配置
  */
 export type UploadExtraData = {
+  host: string;
+  path: string;
   key: string;
   OSSAccessKeyId: string;
   policy: string;

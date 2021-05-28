@@ -55,8 +55,13 @@ const Editor: React.FC<EditorProps> = (props) => {
       }
 
       function onSuccess(data: any) {
+        let url: string = '';
+        if (ossData) {
+          url = ossData.host + '/' + ossData.path;
+        }
+
         param.success({
-          url: (ossData as UploadExtraData)?.url,
+          url: url,
           meta: {
             id: '',
             title: '',
