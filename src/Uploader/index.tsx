@@ -116,7 +116,9 @@ const Uploader = (originProps: UploaderProps) => {
     } else {
       if (fileList.every((item) => item.status === 'done')) {
         setLoading(false);
-        onChange?.(fileList.map((item) => item.url || item.response.url));
+        const url = data.host + '/' + data.path;
+        const urls = fileList.map((item) => item.url || url);
+        onChange?.(urls);
       }
     }
     setFileList(fileList);

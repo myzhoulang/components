@@ -251,7 +251,7 @@ const Demo = () => {
   };
 
   const oss = {
-    OSSHeader: { token: 'cdf1d5c3f24341c08e2904395191cfb7' },
+    OSSHeader: { token: '8cef3bd3b24e41e79910997d7589a655' },
     OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
   };
 
