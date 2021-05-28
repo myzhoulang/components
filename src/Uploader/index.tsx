@@ -57,7 +57,7 @@ const defaultUploadProps = {
 
 const Uploader = (originProps: UploaderProps) => {
   const [fileList, setFileList] = useState<Array<UploadFile>>([]);
-  const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>({});
   const isTriggerChange = useRef(false);
 
@@ -106,17 +106,20 @@ const Uploader = (originProps: UploaderProps) => {
 
   const change = ({ fileList }: UploadChangeParam) => {
     console.log('value change');
-    setFileList(fileList);
     isTriggerChange.current = true;
     const signFile = fileList[0];
     if (isSign && signFile.status === 'done') {
-      const url = signFile.url || signFile.response.url;
+      const url = data.host + '/' + data.path;
+      signFile.url = url;
+      setLoading(false);
       onChange?.(url);
     } else {
       if (fileList.every((item) => item.status === 'done')) {
+        setLoading(false);
         onChange?.(fileList.map((item) => item.url || item.response.url));
       }
     }
+    setFileList(fileList);
   };
 
   const beforeUpload = async (file: File) => {
@@ -131,6 +134,7 @@ const Uploader = (originProps: UploaderProps) => {
       if (oss && !uploadProps?.customRequest) {
         const data = await getExtraData(file, oss);
         setData(data);
+        setLoading(true);
       }
     }
 
@@ -145,9 +149,10 @@ const Uploader = (originProps: UploaderProps) => {
       ...uploadProps,
     };
 
-    let signUrl: string;
+    let signUrl: string | undefined;
     if (isSign && uploadProps.listType === 'picture-card') {
-      signUrl = fileList[0]?.url || fileList[0]?.response?.url;
+      const signFile = fileList[0];
+      signUrl = signFile?.url;
       props.showUploadList = false;
     } else {
       props.fileList = fileList;
@@ -157,7 +162,7 @@ const Uploader = (originProps: UploaderProps) => {
       const listType = uploadProps.listType;
       const cardButton = (
         <div>
-          <PlusOutlined />
+          {loading ? <LoadingOutlined /> : <PlusOutlined />}
           <div style={{ marginTop: 8 }}>Upload</div>
         </div>
       );

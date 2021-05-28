@@ -24,6 +24,7 @@ export const noop = () => {};
 
 // OSS 信息
 export type IOSSData = {
+  path: string;
   dir: string;
   expire: string;
   host: string;
@@ -135,7 +136,6 @@ const getSignature = (oss: OSS) => {
  * @returns Promise<IOSSData> OSS 配置
  */
 export type UploadExtraData = {
-  url: string;
   key: string;
   OSSAccessKeyId: string;
   policy: string;
@@ -143,7 +143,7 @@ export type UploadExtraData = {
   callback: string;
 };
 export const getExtraData: (
-  file: File & { url?: string; path?: string },
+  file: File & { url?: string; path?: string; server_url?: string },
   oss: OSS,
 ) => Promise<UploadExtraData | void> = async (file, oss) => {
   const ext = file.name.substr(file.name.lastIndexOf('.'));
@@ -152,14 +152,15 @@ export const getExtraData: (
     .then(([md5, oss]) => {
       const { dir, host, accessId, policy, signature, callback } = oss;
       const path = `${dir}${md5}${ext}`;
-      file.url = `${host}/${dir}${md5}${ext}`;
+      file.server_url = `${host}/${dir}${md5}${ext}`;
       return {
+        host: host,
+        path: path,
         key: path,
         OSSAccessKeyId: accessId,
         policy: policy,
         Signature: signature,
         callback: callback,
-        url: file.url,
       };
     })
     .catch((e) => {

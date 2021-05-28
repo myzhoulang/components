@@ -23,31 +23,29 @@ import { Uploader } from '@zhou.lang/components';
 import 'antd/dist/antd.css';
 
 const Demo = () => {
-  const request = ({
-    action,
-    data,
-    file,
-    filename,
-    onError,
-    onProgress,
-    onSuccess,
-    withCredentials,
-  }) => {
-    // setUploading(true);
-    console.log(file, filename, withCredentials);
-    setTimeout(() => {
-      onSuccess({
-        url: 'https://gw.alipayobjects.com/zos/rmsportal/uHAzKpIQDMGdmjIxZLOV.png',
-      });
-      // setUploading(false);
-    }, 2000);
-  };
+  // const request = ({
+  //   action,
+  //   data,
+  //   file,
+  //   filename,
+  //   onError,
+  //   onProgress,
+  //   onSuccess,
+  //   withCredentials,
+  // }) => {
+  //   // setUploading(true);
+  //   console.log(file, filename, withCredentials);
+  //   setTimeout(() => {
+  //     onSuccess({
+  //       url: 'https://gw.alipayobjects.com/zos/rmsportal/uHAzKpIQDMGdmjIxZLOV.png',
+  //     });
+  //     // setUploading(false);
+  //   }, 2000);
+  // };
   return (
     <Row gutter={20}>
       <Col span={12}>
         <Uploader
-          uploadProps={{ customRequest: request }}
-          customRequest={request}
           value={
             'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
           }
@@ -58,16 +56,19 @@ const Demo = () => {
       </Col>
       <Col span={12}>
         <Uploader
+          oss={{
+            // getOSSData: getOSSData,
+            OSSHeader: { token: 'cdf1d5c3f24341c08e2904395191cfb7' },
+            OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
+          }}
           uploadProps={{
             listType: 'picture-card',
             showUploadList: false,
-            customRequest: request,
+            // customRequest: request,
+            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
           }}
-          value={
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-          }
           exts={['png', 'jpeg']}
-          signSize={200}
+          signSize={200000}
           crop={false}
         />
       </Col>
@@ -164,7 +165,7 @@ const Demo = () => {
 
     const ossData = await util.getExtraData(file, {
       OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
-      OSSHeader: { token: 'c0365260778d4065bf57a717c9591043' },
+      OSSHeader: { token: 'cdf1d5c3f24341c08e2904395191cfb7' },
     });
 
     const xhr = new XMLHttpRequest();
@@ -201,7 +202,7 @@ const Demo = () => {
         <Uploader
           oss={{
             // getOSSData: getOSSData,
-            OSSHeader: { token: 'c0365260778d4065bf57a717c9591043' },
+            OSSHeader: { token: 'cdf1d5c3f24341c08e2904395191cfb7' },
             OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
           }}
           uploadProps={{
@@ -250,7 +251,7 @@ const Demo = () => {
   };
 
   const oss = {
-    OSSHeader: { token: '1e0bb8ae06ed4a8ba1e9c18f0b740c09' },
+    OSSHeader: { token: 'cdf1d5c3f24341c08e2904395191cfb7' },
     OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
   };
 
