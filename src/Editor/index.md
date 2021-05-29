@@ -11,6 +11,8 @@ nav:
 # Editor
 
 > `Editor`是对 `BraftEditor` 组件的再封装, `BraftEditor`上的属性都可以用在`Editor`的`braftEditorProps`属性上
+> 组件在内部集成了 文件上传功能， 默认上传到`oss`。使用默认上传需要`policy`和签名信息。如果使用自定义上传，需要在`upload`属性中
+> 配置`customUpload`，自定义上传方法。
 
 ## 代码示例
 
@@ -31,7 +33,6 @@ const tailLayout = {
 
 const Demo = () => {
   const oss = {
-    // getOSSData: getOSSData,
     OSSHeader: { token: 'cdf1d5c3f24341c08e2904395191cfb7' },
     OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
   };

@@ -57,14 +57,6 @@ export type KeyValue = {
   [key: string]: any;
 };
 
-// // 上传文件的 props
-// export type UploadProps = {
-//   // 自定义上传文件方法
-//   customUpload?: (fd: FormData, params?: Params) => Promise<any>;
-//   // 默认上传文件的地址
-//   serverUrl?: string;
-// };
-
 // 默认获取 oss 配置方法
 // 当需要获取oss配置数据的时候，只提供了一个获取 oss 配置的 api 时使用
 const getOSSDataForAction = (url: string, header?: Headers) => {

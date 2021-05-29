@@ -112,12 +112,15 @@ const Uploader = (originProps: UploaderProps) => {
       const url = data.host + '/' + data.path;
       signFile.url = url;
       setLoading(false);
-      onChange?.(url);
+      onChange?.(data.path);
     } else {
       if (fileList.every((item) => item.status === 'done')) {
+        console.log(fileList);
         setLoading(false);
-        const url = data.host + '/' + data.path;
-        const urls = fileList.map((item) => item.url || url);
+        const urls = fileList.map((item) => {
+          return item.url || item?.response?.filename;
+        });
+        console.log(fileList);
         onChange?.(urls);
       }
     }

@@ -82,23 +82,28 @@ const Editor: React.FC<EditorProps> = (props) => {
 
       function onAbort() {}
 
-      // 判断是否 OSS 上传还是自定义上传
+      // 有自定义上传方法，直接使用并返回
       if (typeof upload.customUpload === 'function') {
         return upload.customUpload(form);
       }
 
+      // 没有自定义上传方法并且没有action ，直接抛错并返回
       if (!upload.action) {
-        console.error('使用默认上传方法需要 action 地址');
+        param.error({
+          msg: '使用默认上传方法需要 action 地址',
+        });
         return;
       }
 
+      // 没有自定义上传方法并且没有ossData ，直接抛错并返回
       if (!ossData) {
+        param.error({
+          msg: '获取 oss 数据失败',
+        });
         return;
       }
 
-      Object.entries(ossData).forEach(([key, value]) => {
-        form.append(key, value);
-      });
+      Object.entries(ossData).forEach(([key, value]) => {});
 
       form.append('file', param.file);
       xhr.open('POST', upload.action, true);
