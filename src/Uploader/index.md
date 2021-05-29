@@ -14,234 +14,6 @@ nav:
 
 ## 代码示例
 
-### 基本用法 限制一个文件
-
-```tsx
-import React from 'react';
-import { Row, Col } from 'antd';
-import { Uploader } from '@zhou.lang/components';
-import 'antd/dist/antd.css';
-const token = `e987a0e0b12149f39afc0da50fa6d98b`;
-const Demo = () => {
-  return (
-    <Row gutter={20}>
-      <Col span={12}>
-        <Uploader
-          oss={{
-            OSSHeader: { token },
-            OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
-          }}
-          uploadProps={{
-            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-          }}
-          value={
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-          }
-          exts={['png', 'jpeg']}
-          signSize={200}
-          crop={false}
-        />
-      </Col>
-      <Col span={12}>
-        <Uploader
-          oss={{
-            OSSHeader: { token },
-            OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
-          }}
-          uploadProps={{
-            listType: 'picture-card',
-            showUploadList: false,
-            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-          }}
-          exts={['png', 'jpeg']}
-          signSize={200000}
-          crop={false}
-        />
-      </Col>
-    </Row>
-  );
-};
-
-export default Demo;
-```
-
-### 基本用法 多个
-
-```tsx
-import React from 'react';
-import { Row, Col } from 'antd';
-import { Uploader, util } from '@zhou.lang/components';
-import 'antd/dist/antd.css';
-
-const token = `e987a0e0b12149f39afc0da50fa6d98b`;
-const Demo = () => {
-  // 自定义获取token方法
-  const getOSSData = () => {
-    return fetch(`http://daily.api.beicaizs.com/compliance/oss/policy`, {
-      method: 'GET',
-      headers: {
-        token,
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => response.data);
-  };
-
-  return (
-    <Row gutter={20}>
-      <Col span={8}>
-        <Uploader
-          oss={{
-            OSSHeader: { token },
-            OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
-          }}
-          uploadProps={{
-            maxCount: 3,
-            multiple: true,
-            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-          }}
-          value={
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-          }
-          exts={['png', 'jpeg']}
-          signSize={200}
-          crop={false}
-        />
-      </Col>
-
-      <Col span={8}>
-        <Uploader
-          oss={{
-            getOSSData: getOSSData,
-          }}
-          uploadProps={{
-            listType: 'picture-card',
-            maxCount: 3,
-            multiple: true,
-            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-          }}
-          value={
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-          }
-          exts={['png', 'jpeg']}
-          signSize={200}
-          crop={false}
-        />
-      </Col>
-
-      <Col span={8}>
-        <Uploader
-          oss={{
-            OSSHeader: { token },
-            OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
-          }}
-          uploadProps={{
-            listType: 'picture-card',
-            maxCount: 3,
-            multiple: true,
-            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-          }}
-          value={
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-          }
-          exts={['png', 'jpeg']}
-          signSize={200}
-          crop={false}
-        />
-      </Col>
-    </Row>
-  );
-};
-
-export default Demo;
-```
-
-### 自定义请求方法
-
-```tsx
-import React from 'react';
-import { Row, Col } from 'antd';
-import { Uploader, util } from '@zhou.lang/components';
-import 'antd/dist/antd.css';
-
-const Demo = () => {
-  // 自定义请求方法
-  const request = async ({
-    action,
-    data,
-    file,
-    filename,
-    headers,
-    onError,
-    onProgress,
-    onSuccess,
-    withCredentials,
-  }) => {
-    console.log('customer');
-    const form = new FormData();
-
-    const ossData = await util.getExtraData(file, {
-      OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
-      OSSHeader: { token: 'e987a0e0b12149f39afc0da50fa6d98b' },
-    });
-
-    const xhr = new XMLHttpRequest();
-
-    Object.entries(ossData).forEach(([key, value]) => {
-      form.append(key, value);
-    });
-    form.append('file', file);
-    xhr.open('POST', 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/', true);
-    xhr.send(form);
-    xhr.upload.addEventListener('progress', onProgress, false);
-    xhr.addEventListener('load', onSuccess, false);
-    xhr.addEventListener('error', onError, false);
-  };
-
-  return (
-    <Row gutter={20}>
-      <Col span={12}>
-        <Uploader
-          uploadProps={{
-            customRequest: request,
-            maxCount: 3,
-          }}
-          value={
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-          }
-          exts={['png', 'jpeg']}
-          signSize={200}
-          crop={false}
-        />
-      </Col>
-
-      <Col span={12}>
-        <Uploader
-          oss={{
-            // getOSSData: getOSSData,
-            OSSHeader: { token: 'cdf1d5c3f24341c08e2904395191cfb7' },
-            OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
-          }}
-          uploadProps={{
-            listType: 'picture-card',
-            maxCount: 3,
-            action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-          }}
-          value={
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-          }
-          exts={['png', 'jpeg']}
-          signSize={200}
-          crop={false}
-        />
-      </Col>
-    </Row>
-  );
-};
-
-export default Demo;
-```
-
 ### 结合 antd 表单校验使用
 
 ```tsx
@@ -286,7 +58,6 @@ const Demo = () => {
     }, 2000);
   }, [projectId]);
 
-  // uploadProps={{ disabled: true }}
   return (
     <Row>
       <Col span={12}>
@@ -296,30 +67,10 @@ const Demo = () => {
           onFinish={onFinish}
           initialValues={{
             avatar: '',
-            projects: [
-              'https://t7.baidu.com/it/u=2531125946,3055766435&fm=193&f=GIF',
-            ],
+            projects: [],
           }}
           {...layout}
         >
-          <Form.Item
-            name="avatar"
-            label="个人头像"
-            extra="只能上传 png 图片"
-            rules={[{ required: true, message: 'required' }]}
-          >
-            <Uploader
-              oss={oss}
-              uploadProps={{
-                listType: 'picture-card',
-                maxCount: 1,
-                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-              }}
-              exts={['png', 'jpeg']}
-              signSize={200}
-              crop={false}
-            />
-          </Form.Item>
           <Form.Item name="projects" label="项目图标" extra="只能上传 png 图片">
             <Uploader
               oss={oss}
@@ -333,23 +84,6 @@ const Demo = () => {
               crop={false}
             />
           </Form.Item>
-          <Form.Item
-            name="projectsFile"
-            label="项目文件"
-            extra="只能上传 pdf 或 doc 文件"
-          >
-            <Uploader
-              oss={oss}
-              uploadProps={{
-                maxCount: 5,
-                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-              }}
-              maxCount={5}
-              exts={['pdf', 'docx']}
-              signSize={200}
-              crop={false}
-            />
-          </Form.Item>
 
           <Form.Item {...tailLayout}>
             <Space>
@@ -358,6 +92,20 @@ const Demo = () => {
               </Button>
               <Button htmlType="reset" onClick={() => form.resetFields()}>
                 reset
+              </Button>
+              <Button onClick={() => form.setFieldsValue({ projects: [] })}>
+                清空项目图标
+              </Button>
+              <Button
+                onClick={() =>
+                  form.setFieldsValue({
+                    projects: [
+                      'https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg',
+                    ],
+                  })
+                }
+              >
+                设置项目图标
               </Button>
             </Space>
           </Form.Item>

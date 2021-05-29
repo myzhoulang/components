@@ -71,36 +71,44 @@ const Uploader = (originProps: UploaderProps) => {
   const maxCount = uploadProps.maxCount;
   const isSign = maxCount === 1;
 
-  useEffect(() => {
-    if (
+  const hasValue = (value: string | Array<string>) => {
+    return (
       (typeof value === 'string' && value) ||
-      (Array.isArray(value) && value.length > 0 && !isTriggerChange.current)
-    ) {
-      console.log('useEffect');
-      let fileList: Array<UploadFile> = [];
-      if (Array.isArray(value)) {
-        fileList = value.map((item) => {
-          if (typeof item === 'string') {
-            return {
+      (Array.isArray(value) && value.length > 0)
+    );
+  };
+
+  useEffect(() => {
+    console.log('useEffect');
+    if (!isTriggerChange.current) {
+      if (!hasValue(value)) {
+        setFileList([]);
+      } else {
+        let fileList: Array<UploadFile> = [];
+        if (Array.isArray(value)) {
+          fileList = value.map((item) => {
+            if (typeof item === 'string') {
+              return {
+                name: `${Math.random()}`,
+                uid: `${Math.random()}`,
+                status: 'done',
+                url: item,
+              };
+            }
+            return item;
+          });
+        } else {
+          fileList = [
+            {
               name: `${Math.random()}`,
               uid: `${Math.random()}`,
               status: 'done',
-              url: item,
-            };
-          }
-          return item;
-        });
-      } else {
-        fileList = [
-          {
-            name: `${Math.random()}`,
-            uid: `${Math.random()}`,
-            status: 'done',
-            url: value,
-          },
-        ];
+              url: value,
+            },
+          ];
+        }
+        setFileList(fileList);
       }
-      setFileList(fileList);
     }
   }, [value]);
 
@@ -113,6 +121,9 @@ const Uploader = (originProps: UploaderProps) => {
       signFile.url = url;
       setLoading(false);
       onChange?.(data.path);
+      setTimeout(() => {
+        isTriggerChange.current = false;
+      });
     } else {
       if (fileList.every((item) => item.status === 'done')) {
         console.log(fileList);
@@ -122,6 +133,9 @@ const Uploader = (originProps: UploaderProps) => {
         });
         console.log(fileList);
         onChange?.(urls);
+        setTimeout(() => {
+          isTriggerChange.current = false;
+        });
       }
     }
     setFileList(fileList);
