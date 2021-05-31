@@ -30,7 +30,7 @@ const tailLayout = {
   wrapperCol: { offset: 4, span: 20 },
 };
 const { TextArea } = Input;
-const token = `b671f50d46364240914f26cc435a694a`;
+const token = `b2afc52e13d4456eaae13923d960db9d`;
 const Demo = () => {
   const [form] = Form.useForm();
   const [value, setValue] = useState({});
@@ -48,7 +48,8 @@ const Demo = () => {
   useEffect(() => {
     setTimeout(() => {
       form.setFieldsValue({
-        avatar: '',
+        avatar:
+          'https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg',
         projects: [
           'https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg',
         ],
@@ -83,27 +84,30 @@ const Demo = () => {
             rules={[{ required: true, message: '请上传个人头像' }]}
           >
             <Uploader
+              label="个人头像"
               oss={oss}
               uploadProps={{
                 listType: 'picture-card',
                 maxCount: 1,
+                accept: 'image/*',
                 action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
               }}
               exts={['png', 'jpeg']}
-              signSize={200}
+              signSize={20000}
               crop={false}
             />
           </Form.Item>
 
           <Form.Item
-            name="projects"
             label="项目图标"
+            name="projects"
             extra="只能上传 png 图片"
             rules={[
               { required: true, message: '请上传项目图标', type: 'array' },
             ]}
           >
             <Uploader
+              label="项目图标"
               oss={oss}
               uploadProps={{
                 listType: 'picture-card',
@@ -123,6 +127,7 @@ const Demo = () => {
             rules={[{ required: true, message: '请上传项目文件' }]}
           >
             <Uploader
+              label="项目文件"
               oss={oss}
               uploadProps={{
                 maxCount: 1,
@@ -143,6 +148,7 @@ const Demo = () => {
             ]}
           >
             <Uploader
+              label="媒体文件"
               oss={oss}
               uploadProps={{
                 maxCount: 5,

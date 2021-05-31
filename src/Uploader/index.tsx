@@ -1,12 +1,17 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { Upload, message, Button } from 'antd';
+import React, { useEffect, useState, useRef } from 'react';
+import classnames from 'classnames';
+import { Upload, Button, Modal } from 'antd';
 import type { UploadProps } from 'antd';
 import type { UploadFile, UploadChangeParam } from 'antd/es/upload/interface';
+import SignCardUpload from './SignCardUpload';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
-import { noop, IOSSData, getExtraData, OSS, uploadValid } from '@/utils';
+import { noop, getExtraData, OSS, uploadValid } from '@/utils';
+import style from './index.less';
 
 export type UploaderProps = {
+  // 展示文案
+  label?: string;
   // 获取OSS 配置数据
   oss?: OSS;
   /**
@@ -48,22 +53,102 @@ const defaultProps = {
   signSize: 200,
   crop: false,
   exts: ['jpg', 'jpeg', 'png'],
-};
-
-const defaultUploadProps = {
-  listType: 'text',
-  maxCount: 1,
+  accept: 'image/jpg, image/png, image/jpeg',
 };
 
 const Uploader = (originProps: UploaderProps) => {
   const props = Object.assign({ ...defaultProps }, originProps);
-  const { value, onChange, exts = [], signSize = 200, crop } = props;
+  const { value, onChange, exts = [], signSize = 200, crop, label } = props;
 
   const [fileList, setFileList] = useState<Array<UploadFile>>([]);
   const [loading, setLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
   const [data, setData] = useState<any>({});
+  const [previewVisible, setPreviewVisible] = useState(false);
   const isTriggerChange = useRef(false);
   const lastValue = useRef(value);
+
+  // 文件上传成功后执行的操作
+  // 设置 loading状态、触发 onChange、延迟将 isTriggerChange.current 值改成false
+  const uploadSuccess = (url: string | Array<string>) => {
+    lastValue.current = url;
+    onChange?.(url);
+    setLoading(false);
+    setTimeout(() => {
+      isTriggerChange.current = false;
+    });
+  };
+
+  const change = ({ fileList }: UploadChangeParam) => {
+    console.log('value change');
+    // 将 isTriggerChange.current 值改成true, 防止 setFileList 操作导致 useEffect 重复执行
+    // 当文件上传成功后 在 uploadSuccess 方法中， 将 isTriggerChange.current 值重新赋值为 false
+    // 这样当外面 重新改变 upload 的值得时候 就又会走 useEffect
+    isTriggerChange.current = true;
+    const signFile = fileList[0];
+    if (isSign && signFile?.status === 'done') {
+      const url = data.host + '/' + data.path;
+      signFile.url = url;
+      uploadSuccess(url);
+    } else {
+      // TODO: 替换 any
+      if (fileList.every((item: any) => item.status === 'done')) {
+        const urls = fileList.map((item: any) => {
+          return item.url || item?.response?.filename;
+        });
+        uploadSuccess(urls);
+      }
+    }
+    setFileList(fileList);
+  };
+
+  // 删除文件
+  const deleteFile = (file: string) => {
+    fileList.forEach((item, index, array) => {
+      if (item.url === file) {
+        array.splice(index, 1);
+      }
+    });
+    setFileList(fileList);
+    const url = isSign
+      ? ''
+      : fileList.map((item) => item.url || item?.response?.filename);
+    uploadSuccess(url);
+  };
+
+  // 预览文件
+  const preview = (file: UploadFile | string) => {
+    const fileUrl = typeof file === 'string' ? file : file.url || file.thumbUrl;
+    if (fileUrl) {
+      setPreviewImage(fileUrl);
+      setPreviewVisible(true);
+    }
+  };
+
+  const beforeUpload = async (file: File) => {
+    const { oss, uploadProps } = props;
+    const result = uploadValid(file, {
+      exts,
+      signSize,
+      multiple: uploadProps?.multiple ?? false,
+    });
+    if (result === true) {
+      // 没有自定义方法
+      if (oss && !uploadProps?.customRequest) {
+        const data = await getExtraData(file, oss);
+        setData(data);
+        setLoading(true);
+      }
+    }
+
+    return result;
+  };
+
+  const defaultUploadProps = {
+    listType: 'text',
+    maxCount: 1,
+    onPreview: preview,
+  };
 
   const uploadProps = Object.assign(
     { ...defaultUploadProps },
@@ -79,6 +164,7 @@ const Uploader = (originProps: UploaderProps) => {
       (Array.isArray(value) && value.length > 0)
     );
   };
+
   useEffect(() => {
     console.log('useEffect');
     if (!isTriggerChange.current) {
@@ -113,58 +199,6 @@ const Uploader = (originProps: UploaderProps) => {
     }
   }, [value]);
 
-  // 文件上传成功后执行的操作
-  // 设置 loading状态、触发 onChange、延迟将 isTriggerChange.current 值改成false
-  const uploadSuccess = (url: string | Array<string>) => {
-    lastValue.current = url;
-    onChange?.(url);
-    setLoading(false);
-    setTimeout(() => {
-      isTriggerChange.current = false;
-    });
-  };
-
-  const change = ({ fileList }: UploadChangeParam) => {
-    console.log('value change');
-    // 将 isTriggerChange.current 值改成true, 防止 setFileList 操作导致 useEffect 重复执行
-    // 当文件上传成功后 在 uploadSuccess 方法中， 将 isTriggerChange.current 值重新赋值为 false
-    // 这样当外面 重新改变 upload 的值得时候 就又会走 useEffect
-    isTriggerChange.current = true;
-    const signFile = fileList[0];
-    if (isSign && signFile?.status === 'done') {
-      const url = data.host + '/' + data.path;
-      signFile.url = url;
-      uploadSuccess(url);
-    } else {
-      if (fileList.every((item) => item.status === 'done')) {
-        const urls = fileList.map((item) => {
-          return item.url || item?.response?.filename;
-        });
-        uploadSuccess(urls);
-      }
-    }
-    setFileList(fileList);
-  };
-
-  const beforeUpload = async (file: File) => {
-    const { oss, uploadProps } = props;
-    const result = uploadValid(file, {
-      exts,
-      signSize,
-      multiple: uploadProps?.multiple ?? false,
-    });
-    if (result === true) {
-      // 没有自定义方法
-      if (oss && !uploadProps?.customRequest) {
-        const data = await getExtraData(file, oss);
-        setData(data);
-        setLoading(true);
-      }
-    }
-
-    return result;
-  };
-
   const originUpload = () => {
     const props = {
       onChange: change,
@@ -178,6 +212,8 @@ const Uploader = (originProps: UploaderProps) => {
       const signFile = fileList[0];
       signUrl = signFile?.url;
       props.showUploadList = false;
+      props.className = classnames(props.className, [style.signCard]);
+      console.log('class', props);
     } else {
       props.fileList = fileList;
     }
@@ -187,17 +223,17 @@ const Uploader = (originProps: UploaderProps) => {
       const cardButton = (
         <div>
           {loading ? <LoadingOutlined /> : <PlusOutlined />}
-          <div style={{ marginTop: 8 }}>Upload</div>
+          <div style={{ marginTop: 8 }}>{label ?? 'Unpload'}</div>
         </div>
       );
 
       const uploadButton = () => {
         if (isSign) {
           return signUrl ? (
-            <img
-              src={signUrl}
-              alt="avatar"
-              style={{ width: '100%', height: '100%' }}
+            <SignCardUpload
+              fileUrl={signUrl}
+              onDeleteFile={deleteFile}
+              onPreview={preview}
             />
           ) : (
             cardButton
@@ -213,10 +249,23 @@ const Uploader = (originProps: UploaderProps) => {
       if (listType === 'picture-card') {
         return uploadButton();
       } else {
-        return <Button icon={<PlusOutlined />}>Upload</Button>;
+        return <Button icon={<PlusOutlined />}>{label ?? 'Unpload'}</Button>;
       }
     };
-    return <Upload {...props}>{UploadBtn()}</Upload>;
+
+    return (
+      <>
+        <Upload {...props}>{UploadBtn()}</Upload>
+        <Modal
+          visible={previewVisible}
+          title={'图片预览'}
+          footer={null}
+          onCancel={() => setPreviewVisible(false)}
+        >
+          <img alt={'图片'} style={{ width: '100%' }} src={previewImage} />
+        </Modal>
+      </>
+    );
   };
 
   return (
