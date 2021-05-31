@@ -18,7 +18,7 @@ nav:
 
 ```tsx
 import React, { useState, useEffect } from 'react';
-import { Form, Button, message, Space, Row, Col, Input } from 'antd';
+import { Form, Button, message, Space, Row, Col, Input, Spin } from 'antd';
 import { Uploader } from '@zhou.lang/components';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
@@ -47,7 +47,6 @@ const Demo = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      console.log(11);
       form.setFieldsValue({
         avatar: '',
         projects: [
@@ -71,7 +70,33 @@ const Demo = () => {
           }}
           {...layout}
         >
-          <Form.Item name="projects" label="项目图标" extra="只能上传 png 图片">
+          <Form.Item
+            name="avatar"
+            label="个人头像"
+            extra="只能上传 png 图片"
+            rules={[{ required: true, message: '请上传个人头像' }]}
+          >
+            <Uploader
+              oss={oss}
+              uploadProps={{
+                listType: 'picture-card',
+                maxCount: 1,
+                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
+              }}
+              exts={['png', 'jpeg']}
+              signSize={200}
+              crop={false}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="projects"
+            label="项目图标"
+            extra="只能上传 png 图片"
+            rules={[
+              { required: true, message: '请上传项目图标', type: 'array' },
+            ]}
+          >
             <Uploader
               oss={oss}
               uploadProps={{
@@ -85,6 +110,46 @@ const Demo = () => {
             />
           </Form.Item>
 
+          <Form.Item
+            name="projectsFile"
+            label="项目文件"
+            extra="只能上传 pdf 或 doc 文件"
+            rules={[
+              { required: true, message: '请上传项目文件', type: 'array' },
+            ]}
+          >
+            <Uploader
+              oss={oss}
+              uploadProps={{
+                maxCount: 5,
+                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
+              }}
+              maxCount={5}
+              exts={['pdf', 'docx']}
+              signSize={200}
+              crop={false}
+            />
+          </Form.Item>
+          <Form.Item
+            name="media"
+            label="媒体文件"
+            extra="只能上传 mp4 或 mp3 文件"
+            rules={[
+              { required: true, message: '请上传媒体文件', type: 'array' },
+            ]}
+          >
+            <Uploader
+              oss={oss}
+              uploadProps={{
+                maxCount: 5,
+                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
+              }}
+              maxCount={5}
+              exts={['mp4', 'mp3']}
+              signSize={20000000}
+              crop={false}
+            />
+          </Form.Item>
           <Form.Item {...tailLayout}>
             <Space>
               <Button type="primary" htmlType="submit">

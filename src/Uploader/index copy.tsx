@@ -56,15 +56,13 @@ const defaultUploadProps = {
 };
 
 const Uploader = (originProps: UploaderProps) => {
-  const props = Object.assign({ ...defaultProps }, originProps);
-  const { value, onChange, exts = [], signSize = 200, crop } = props;
-
   const [fileList, setFileList] = useState<Array<UploadFile>>([]);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>({});
   const isTriggerChange = useRef(false);
-  const lastValue = useRef(value);
 
+  const props = Object.assign({ ...defaultProps }, originProps);
+  const { value = [], onChange, exts = [], signSize = 200, crop } = props;
   const uploadProps = Object.assign(
     { ...defaultUploadProps },
     props.uploadProps,
@@ -73,15 +71,17 @@ const Uploader = (originProps: UploaderProps) => {
   const maxCount = uploadProps.maxCount;
   const isSign = maxCount === 1;
 
-  const hasValue = (value: string | Array<string> | undefined) => {
+  const hasValue = (value: string | Array<string>) => {
     return (
       (typeof value === 'string' && value) ||
       (Array.isArray(value) && value.length > 0)
     );
   };
+
   useEffect(() => {
     console.log('useEffect');
     if (!isTriggerChange.current) {
+      isTriggerChange.current = true;
       if (!hasValue(value)) {
         setFileList([]);
       } else {
@@ -111,36 +111,34 @@ const Uploader = (originProps: UploaderProps) => {
         setFileList(fileList);
       }
     }
-  }, [value]);
 
-  // 文件上传成功后执行的操作
-  // 设置 loading状态、触发 onChange、延迟将 isTriggerChange.current 值改成false
-  const uploadSuccess = (url: string | Array<string>) => {
-    lastValue.current = url;
-    onChange?.(url);
-    setLoading(false);
     setTimeout(() => {
       isTriggerChange.current = false;
     });
-  };
+  }, [value]);
 
   const change = ({ fileList }: UploadChangeParam) => {
     console.log('value change');
-    // 将 isTriggerChange.current 值改成true, 防止 setFileList 操作导致 useEffect 重复执行
-    // 当文件上传成功后 在 uploadSuccess 方法中， 将 isTriggerChange.current 值重新赋值为 false
-    // 这样当外面 重新改变 upload 的值得时候 就又会走 useEffect
     isTriggerChange.current = true;
     const signFile = fileList[0];
     if (isSign && signFile.status === 'done') {
       const url = data.host + '/' + data.path;
       signFile.url = url;
-      uploadSuccess(url);
+      setLoading(false);
+      onChange?.(data.path);
+      setTimeout(() => {
+        isTriggerChange.current = false;
+      });
     } else {
       if (fileList.every((item) => item.status === 'done')) {
+        setLoading(false);
         const urls = fileList.map((item) => {
           return item.url || item?.response?.filename;
         });
-        uploadSuccess(urls);
+        onChange?.(urls);
+        setTimeout(() => {
+          isTriggerChange.current = false;
+        });
       }
     }
     setFileList(fileList);
