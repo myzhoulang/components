@@ -30,7 +30,7 @@ const tailLayout = {
   wrapperCol: { offset: 4, span: 20 },
 };
 const { TextArea } = Input;
-const token = `e987a0e0b12149f39afc0da50fa6d98b`;
+const token = `b671f50d46364240914f26cc435a694a`;
 const Demo = () => {
   const [form] = Form.useForm();
   const [value, setValue] = useState({});
@@ -112,7 +112,10 @@ const Demo = () => {
         </Form>
       </Col>
       <Col span={12}>
-        <TextArea rows={12} value={JSON.stringify(value)}></TextArea>
+        <TextArea
+          rows={12}
+          value={JSON.stringify(value, null, '\t')}
+        ></TextArea>
         <Button onClick={() => setValue(form.getFieldsValue(true))}>
           Get Form Value
         </Button>

@@ -21,7 +21,7 @@ import React from 'react';
 import { Row, Col } from 'antd';
 import { Uploader } from '@zhou.lang/components';
 import 'antd/dist/antd.css';
-const token = `e987a0e0b12149f39afc0da50fa6d98b`;
+const token = `b671f50d46364240914f26cc435a694a`;
 const Demo = () => {
   return (
     <Row gutter={20}>

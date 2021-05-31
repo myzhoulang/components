@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { Upload, message, Button } from 'antd';
 import type { UploadProps } from 'antd';
 import type { UploadFile, UploadChangeParam } from 'antd/es/upload/interface';
@@ -81,6 +81,7 @@ const Uploader = (originProps: UploaderProps) => {
   useEffect(() => {
     console.log('useEffect');
     if (!isTriggerChange.current) {
+      isTriggerChange.current = true;
       if (!hasValue(value)) {
         setFileList([]);
       } else {
@@ -110,6 +111,10 @@ const Uploader = (originProps: UploaderProps) => {
         setFileList(fileList);
       }
     }
+
+    setTimeout(() => {
+      isTriggerChange.current = false;
+    });
   }, [value]);
 
   const change = ({ fileList }: UploadChangeParam) => {
@@ -126,12 +131,10 @@ const Uploader = (originProps: UploaderProps) => {
       });
     } else {
       if (fileList.every((item) => item.status === 'done')) {
-        console.log(fileList);
         setLoading(false);
         const urls = fileList.map((item) => {
           return item.url || item?.response?.filename;
         });
-        console.log(fileList);
         onChange?.(urls);
         setTimeout(() => {
           isTriggerChange.current = false;
