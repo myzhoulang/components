@@ -131,7 +131,7 @@ const Uploader = (originProps: UploaderProps) => {
     // 这样当外面 重新改变 upload 的值得时候 就又会走 useEffect
     isTriggerChange.current = true;
     const signFile = fileList[0];
-    if (isSign && signFile.status === 'done') {
+    if (isSign && signFile?.status === 'done') {
       const url = data.host + '/' + data.path;
       signFile.url = url;
       uploadSuccess(url);
@@ -194,7 +194,11 @@ const Uploader = (originProps: UploaderProps) => {
       const uploadButton = () => {
         if (isSign) {
           return signUrl ? (
-            <img src={signUrl} alt="avatar" style={{ width: '100%' }} />
+            <img
+              src={signUrl}
+              alt="avatar"
+              style={{ width: '100%', height: '100%' }}
+            />
           ) : (
             cardButton
           );
