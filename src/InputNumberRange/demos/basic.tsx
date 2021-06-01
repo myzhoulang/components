@@ -1,9 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from 'antd';
 import { InputNumberRange } from '@zhou.lang/components';
 
-export default () => (
-  <Card bordered={false}>
-    <InputNumberRange placeholder={['start', 'end']} value={[3, 5]} />
-  </Card>
-);
+export default () => {
+  const [value, setValue] = useState<[number?, number?]>([3, 5]);
+  const change = (val: [number?, number?]) => {
+    setValue(val);
+  };
+  return (
+    <Card bordered={false}>
+      <InputNumberRange
+        onChange={change}
+        placeholder={['start', 'end']}
+        value={value}
+        inputNumberProps={{
+          min: 1,
+          max: 10,
+        }}
+      />
+    </Card>
+  );
+};
