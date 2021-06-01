@@ -4,6 +4,9 @@ import { Uploader } from '@zhou.lang/components';
 import type { OSS } from '@zhou.lang/components';
 import 'antd/dist/antd.css';
 
+import { uploadConfig } from '../../../demo.config';
+const token = uploadConfig.token;
+
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 20 },
@@ -12,7 +15,6 @@ const tailLayout = {
   wrapperCol: { offset: 4, span: 20 },
 };
 const { TextArea } = Input;
-const token = `b671f50d46364240914f26cc435a694a`;
 
 type FormData = {
   name: string;
@@ -38,13 +40,14 @@ const ComposeAntDForm = () => {
   useEffect(() => {
     setTimeout(() => {
       form.setFieldsValue({
-        avatar: '',
-        projects: [
-          'https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg',
+        avatar: {},
+        projects: [],
+        projectsFile: [
+          {
+            name: '滴滴出行行程报销单.pdf',
+            url: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/file/9737/bdb70f83fca63a02bd0d061fb867e18f.pdf',
+          },
         ],
-        projectsFile: [],
-        media: [],
-        name: '',
       });
     }, 2000);
   }, [projectId]);
@@ -73,6 +76,7 @@ const ComposeAntDForm = () => {
             rules={[{ required: true, message: '请上传个人头像' }]}
           >
             <Uploader
+              valueType="file"
               oss={oss}
               uploadProps={{
                 listType: 'picture-card',
@@ -94,6 +98,7 @@ const ComposeAntDForm = () => {
             ]}
           >
             <Uploader
+              valueType="file"
               oss={oss}
               uploadProps={{
                 listType: 'picture-card',
@@ -115,6 +120,7 @@ const ComposeAntDForm = () => {
             ]}
           >
             <Uploader
+              valueType="file"
               oss={oss}
               uploadProps={{
                 maxCount: 5,
@@ -125,25 +131,7 @@ const ComposeAntDForm = () => {
               crop={false}
             />
           </Form.Item>
-          <Form.Item
-            name="media"
-            label="媒体文件"
-            extra="只能上传 mp4 或 mp3 文件"
-            rules={[
-              { required: true, message: '请上传媒体文件', type: 'array' },
-            ]}
-          >
-            <Uploader
-              oss={oss}
-              uploadProps={{
-                maxCount: 5,
-                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-              }}
-              exts={['mp4', 'mp3']}
-              signSize={20000000}
-              crop={false}
-            />
-          </Form.Item>
+
           <Form.Item {...tailLayout}>
             <Space>
               <Button type="primary" htmlType="submit">
@@ -171,13 +159,15 @@ const ComposeAntDForm = () => {
         </Form>
       </Col>
       <Col span={12}>
-        <TextArea
-          rows={12}
-          value={JSON.stringify(value, null, '\t')}
-        ></TextArea>
-        <Button onClick={() => setValue(form.getFieldsValue(true))}>
-          Get Form Value
-        </Button>
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <TextArea
+            rows={12}
+            value={JSON.stringify(value, null, '\t')}
+          ></TextArea>
+          <Button onClick={() => setValue(form.getFieldsValue(true))}>
+            获取表单的值
+          </Button>
+        </Space>
       </Col>
     </Row>
   );

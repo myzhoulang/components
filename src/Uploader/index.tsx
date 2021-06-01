@@ -2,16 +2,31 @@ import React, { useEffect, useState, useRef } from 'react';
 import classnames from 'classnames';
 import { Upload, Button, Modal } from 'antd';
 import type { UploadProps } from 'antd';
-import type { UploadFile, UploadChangeParam } from 'antd/es/upload/interface';
+import type {
+  UploadFile,
+  UploadChangeParam,
+  UploadFileStatus,
+} from 'antd/es/upload/interface';
 import SignCardUpload from './SignCardUpload';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
 import { noop, getExtraData, OSS, uploadValid } from '@/utils';
 import style from './index.less';
 
+export type ValueFile = {
+  name: string;
+  url: string;
+};
+
+export type ValueProps = string | Array<string> | ValueFile | Array<ValueFile>;
+
 export type UploaderProps = {
+  // 类型 value是字符串还是文件队形
+  valueType: 'string' | 'file';
+
   // 展示文案
   label?: string;
+
   // 获取OSS 配置数据
   oss?: OSS;
   /**
@@ -19,7 +34,7 @@ export type UploaderProps = {
    * @description       文件的路径
    * @default
    */
-  value?: string | Array<string>;
+  value?: ValueProps;
   /**
    * exts
    * @description       可以上传的文件扩展名
@@ -45,10 +60,11 @@ export type UploaderProps = {
    */
   uploadProps?: UploadProps;
 
-  onChange?: (urls: string | Array<string>) => void;
+  onChange?: (urls: ValueProps) => void;
 };
 
 const defaultProps = {
+  valueType: 'string',
   getOSSConfig: noop,
   signSize: 200,
   crop: false,
@@ -58,7 +74,15 @@ const defaultProps = {
 
 const Uploader = (originProps: UploaderProps) => {
   const props = Object.assign({ ...defaultProps }, originProps);
-  const { value, onChange, exts = [], signSize = 200, crop, label } = props;
+  const {
+    value,
+    onChange,
+    exts = [],
+    signSize = 200,
+    crop,
+    label,
+    valueType,
+  } = props;
 
   const [fileList, setFileList] = useState<Array<UploadFile>>([]);
   const [loading, setLoading] = useState(false);
@@ -70,9 +94,9 @@ const Uploader = (originProps: UploaderProps) => {
 
   // 文件上传成功后执行的操作
   // 设置 loading状态、触发 onChange、延迟将 isTriggerChange.current 值改成false
-  const uploadSuccess = (url: string | Array<string>) => {
-    lastValue.current = url;
-    onChange?.(url);
+  const uploadSuccess = (files: ValueProps) => {
+    lastValue.current = files;
+    onChange?.(files);
     setLoading(false);
     setTimeout(() => {
       isTriggerChange.current = false;
@@ -89,14 +113,30 @@ const Uploader = (originProps: UploaderProps) => {
     if (isSign && signFile?.status === 'done') {
       const url = data.host + '/' + data.path;
       signFile.url = url;
-      uploadSuccess(url);
-    } else {
-      // TODO: 替换 any
-      if (fileList.every((item: any) => item.status === 'done')) {
-        const urls = fileList.map((item: any) => {
-          return item.url || item?.response?.filename;
+      if (valueType === 'file' && signFile) {
+        uploadSuccess({
+          url: url,
+          name: signFile.name,
         });
-        uploadSuccess(urls);
+      } else {
+        uploadSuccess(url);
+      }
+    } else {
+      if (fileList.every((item: UploadFile) => item.status === 'done')) {
+        if (valueType === 'file') {
+          const files = fileList.map((item: any) => {
+            return {
+              name: item.name,
+              url: item.url || item?.response?.filename,
+            };
+          });
+          uploadSuccess(files);
+        } else {
+          const urls = fileList.map((item: any) => {
+            return item.url || item?.response?.filename;
+          });
+          uploadSuccess(urls);
+        }
       }
     }
     setFileList(fileList);
@@ -158,7 +198,8 @@ const Uploader = (originProps: UploaderProps) => {
   const maxCount = uploadProps.maxCount;
   const isSign = maxCount === 1;
 
-  const hasValue = (value: string | Array<string> | undefined) => {
+  // 判断字符串是否为空或者数组长度是否为0
+  const hasValue = (value: ValueProps) => {
     return (
       (typeof value === 'string' && value) ||
       (Array.isArray(value) && value.length > 0)
@@ -168,31 +209,51 @@ const Uploader = (originProps: UploaderProps) => {
   useEffect(() => {
     console.log('useEffect');
     if (!isTriggerChange.current) {
+      if (!value) {
+        return;
+      }
       if (!hasValue(value)) {
         setFileList([]);
       } else {
         let fileList: Array<UploadFile> = [];
         if (Array.isArray(value)) {
-          fileList = value.map((item) => {
+          fileList = value.map((item: string | ValueFile) => {
+            const info: { uid: string; status: UploadFileStatus } = {
+              uid: `${Math.random()}`,
+              status: 'done',
+            };
             if (typeof item === 'string') {
               return {
                 name: `${Math.random()}`,
-                uid: `${Math.random()}`,
-                status: 'done',
                 url: item,
+                ...info,
               };
             }
-            return item;
+            return {
+              ...info,
+              ...item,
+            };
           });
         } else {
-          fileList = [
-            {
-              name: `${Math.random()}`,
-              uid: `${Math.random()}`,
-              status: 'done',
-              url: value,
-            },
-          ];
+          if (typeof value === 'string') {
+            fileList = [
+              {
+                name: `${Math.random()}`,
+                uid: `${Math.random()}`,
+                status: 'done',
+                url: value,
+              },
+            ];
+          } else {
+            fileList = [
+              {
+                uid: `${Math.random()}`,
+                status: 'done',
+                name: value.name,
+                url: value.url,
+              },
+            ];
+          }
         }
         setFileList(fileList);
       }

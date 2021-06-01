@@ -14,193 +14,21 @@ nav:
 
 ## 代码示例
 
+### 基本用法 单个文件
+
+<code src="./demos/SignFile.tsx" title="单个文件" />
+
+### 自定义请求方法
+
+<code src="./demos/CustomRequest.tsx" title="自定义请求方法" />
+
+### 值为对象或对象数组
+
+<code src="./demos/ValueFiles.tsx" title="值为对象或对象数组" />
+
 ### 结合 antd 表单校验使用
 
-```tsx
-import React, { useState, useEffect } from 'react';
-import { Form, Button, message, Space, Row, Col, Input, Spin } from 'antd';
-import { Uploader } from '@zhou.lang/components';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import 'antd/dist/antd.css';
-const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 20 },
-};
-const tailLayout = {
-  wrapperCol: { offset: 4, span: 20 },
-};
-const { TextArea } = Input;
-const token = `719ab15b0efc4698923f1670e7754d67`;
-const Demo = () => {
-  const [form] = Form.useForm();
-  const [value, setValue] = useState({});
-  const [projectId] = useState(1);
-
-  const onFinish = (values) => {
-    console.log('Received values from form: ', values);
-  };
-
-  const oss = {
-    OSSHeader: { token },
-    OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
-  };
-
-  useEffect(() => {
-    setTimeout(() => {
-      form.setFieldsValue({
-        avatar:
-          'https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg',
-        projects: [
-          'https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg',
-        ],
-        projectsFile: '',
-        media: [],
-        name: '',
-      });
-    }, 2000);
-  }, [projectId]);
-
-  return (
-    <Row gutter={20}>
-      <Col span={12}>
-        <Form
-          form={form}
-          name="customized_form_controls"
-          onFinish={onFinish}
-          {...layout}
-        >
-          <Form.Item
-            name="name"
-            label="您的姓名"
-            rules={[{ required: true, message: '请填写您的姓名' }]}
-          >
-            <Input placeholder="尊姓大名" />
-          </Form.Item>
-
-          <Form.Item
-            name="avatar"
-            label="个人头像"
-            extra="只能上传 png 图片"
-            rules={[{ required: true, message: '请上传个人头像' }]}
-          >
-            <Uploader
-              label="个人头像"
-              oss={oss}
-              uploadProps={{
-                listType: 'picture-card',
-                maxCount: 1,
-                accept: 'image/*',
-                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-              }}
-              exts={['png', 'jpeg']}
-              signSize={20000}
-              crop={false}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="项目图标"
-            name="projects"
-            extra="只能上传 png 图片"
-            rules={[
-              { required: true, message: '请上传项目图标', type: 'array' },
-            ]}
-          >
-            <Uploader
-              label="项目图标"
-              oss={oss}
-              uploadProps={{
-                listType: 'picture-card',
-                maxCount: 5,
-                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-              }}
-              exts={['png', 'jpeg']}
-              signSize={200}
-              crop={false}
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="projectsFile"
-            label="项目文件"
-            extra="只能上传 pdf 或 doc 文件"
-            rules={[{ required: true, message: '请上传项目文件' }]}
-          >
-            <Uploader
-              label="项目文件"
-              oss={oss}
-              uploadProps={{
-                maxCount: 1,
-                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-              }}
-              maxCount={5}
-              exts={['pdf', 'docx']}
-              signSize={200}
-              crop={false}
-            />
-          </Form.Item>
-          <Form.Item
-            name="media"
-            label="媒体文件"
-            extra="只能上传 mp4 或 mp3 文件"
-            rules={[
-              { required: true, message: '请上传媒体文件', type: 'array' },
-            ]}
-          >
-            <Uploader
-              label="媒体文件"
-              oss={oss}
-              uploadProps={{
-                maxCount: 5,
-                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
-              }}
-              maxCount={5}
-              exts={['mp4', 'mp3']}
-              signSize={20000000}
-              crop={false}
-            />
-          </Form.Item>
-          <Form.Item {...tailLayout}>
-            <Space>
-              <Button type="primary" htmlType="submit">
-                Submit1
-              </Button>
-              <Button htmlType="reset" onClick={() => form.resetFields()}>
-                reset
-              </Button>
-              <Button onClick={() => form.setFieldsValue({ projects: [] })}>
-                清空项目图标
-              </Button>
-              <Button
-                onClick={() =>
-                  form.setFieldsValue({
-                    projects: [
-                      'https://gw.alipayobjects.com/zos/bmw-prod/acb29a94-6200-4798-82eb-190177fa841c/kezwf18r_w2556_h1396.jpeg',
-                    ],
-                  })
-                }
-              >
-                设置项目图标
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form>
-      </Col>
-      <Col span={12}>
-        <TextArea
-          rows={12}
-          value={JSON.stringify(value, null, '\t')}
-        ></TextArea>
-        <Button onClick={() => setValue(form.getFieldsValue(true))}>
-          Get Form Value
-        </Button>
-      </Col>
-    </Row>
-  );
-};
-
-export default Demo;
-```
+<code src="./demos/ComposeAntDForm.tsx" title="结合 antd 表单校验使用" />
 
 ### API
 
