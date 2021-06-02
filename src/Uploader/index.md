@@ -16,11 +16,11 @@ nav:
 
 ### 基本用法 单个文件
 
-<code src="./demos/SignFile.tsx" title="单个文件" />
+<!-- <code src="./demos/SignFile.tsx" title="单个文件" /> -->
 
 ### 自定义请求方法
 
-<code src="./demos/CustomRequest.tsx" title="自定义请求方法" />
+<!-- <code src="./demos/CustomRequest.tsx" title="自定义请求方法" /> -->
 
 ### 值为对象或对象数组
 
@@ -28,7 +28,7 @@ nav:
 
 ### 结合 antd 表单校验使用
 
-<code src="./demos/ComposeAntDForm.tsx" title="结合 antd 表单校验使用" />
+<!-- <code src="./demos/ComposeAntDForm.tsx" title="结合 antd 表单校验使用" /> -->
 
 ### API
 

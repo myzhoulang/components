@@ -44,7 +44,12 @@ const ComposeAntDForm = () => {
           name: '头像',
           url: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/file/9737/7999e7b5aa948bf41380bf5f8593c68a.jpeg',
         },
-        projects: [],
+        projects: [
+          {
+            name: '头像',
+            url: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/file/9737/7999e7b5aa948bf41380bf5f8593c68a.jpeg',
+          },
+        ],
         projectsFile: {
           name: '滴滴出行行程报销单.pdf',
           url: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/file/9737/bdb70f83fca63a02bd0d061fb867e18f.pdf',
@@ -127,6 +132,7 @@ const ComposeAntDForm = () => {
             ]}
           >
             <Uploader
+              previewType="page"
               valueType="file"
               oss={oss}
               uploadProps={{
@@ -148,6 +154,7 @@ const ComposeAntDForm = () => {
             ]}
           >
             <Uploader
+              previewType="page"
               valueType="file"
               oss={oss}
               uploadProps={{

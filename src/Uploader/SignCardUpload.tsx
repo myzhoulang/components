@@ -5,20 +5,25 @@ import style from './index.less';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 
+// type PreviewType = Extract<>
 type SignCardUploadProps = {
   fileUrl: string;
-  // previewType:
+  previewType: 'modal' | 'page' | false;
   onPreview?: (file: string) => void;
   onDeleteFile?: (file: string) => void;
 };
 
 const SignCardUpload = (props: SignCardUploadProps) => {
-  const { fileUrl, onPreview, onDeleteFile } = props;
-
+  const { fileUrl, onPreview, onDeleteFile, previewType } = props;
   const preview = (e: React.MouseEvent, file: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onPreview?.(file);
+    if (previewType === false) {
+      return;
+    }
+    if (previewType === 'modal') {
+      e.preventDefault();
+      e.stopPropagation();
+      onPreview?.(file);
+    }
   };
 
   const deleteFile = (e: React.MouseEvent, file: string) => {

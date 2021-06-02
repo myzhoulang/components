@@ -201,11 +201,15 @@ const Uploader = (originProps: UploaderProps) => {
     return result;
   };
 
-  const defaultUploadProps = {
+  const defaultUploadProps: UploadProps = {
     listType: 'text',
     maxCount: 1,
-    onPreview: preview,
   };
+
+  // 预览类型为 modal 形式
+  if (previewType === 'modal') {
+    defaultUploadProps.onPreview = preview;
+  }
 
   const uploadProps = Object.assign(
     { ...defaultUploadProps },
@@ -306,8 +310,10 @@ const Uploader = (originProps: UploaderProps) => {
 
       const uploadButton = () => {
         if (isSign) {
+          console.log('previewType', previewType);
           return signUrl ? (
             <SignCardUpload
+              previewType={previewType}
               fileUrl={signUrl}
               onDeleteFile={deleteFile}
               onPreview={preview}
@@ -333,14 +339,16 @@ const Uploader = (originProps: UploaderProps) => {
     return (
       <>
         <Upload {...props}>{UploadBtn()}</Upload>
-        <Modal
-          visible={previewVisible}
-          title={'图片预览'}
-          footer={null}
-          onCancel={() => setPreviewVisible(false)}
-        >
-          <img alt={'图片'} style={{ width: '100%' }} src={previewImage} />
-        </Modal>
+        {previewType === 'modal' ? (
+          <Modal
+            visible={previewVisible}
+            title={'图片预览'}
+            footer={null}
+            onCancel={() => setPreviewVisible(false)}
+          >
+            <img alt={'图片'} style={{ width: '100%' }} src={previewImage} />
+          </Modal>
+        ) : null}
       </>
     );
   };
