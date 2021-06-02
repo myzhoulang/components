@@ -198,11 +198,13 @@ const Uploader = (originProps: UploaderProps) => {
   const maxCount = uploadProps.maxCount;
   const isSign = maxCount === 1;
 
-  // 判断字符串是否为空或者数组长度是否为0
+  // 判断字符串是否为空或者数组长度是否为0或者不是一个空对象
   const hasValue = (value: ValueProps) => {
     return (
       (typeof value === 'string' && value) ||
-      (Array.isArray(value) && value.length > 0)
+      (Array.isArray(value) && value.length > 0) ||
+      (Object.prototype.toString.call(value) === '[object Object]' &&
+        Object.keys(value).length > 0)
     );
   };
 

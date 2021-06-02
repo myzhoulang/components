@@ -42,7 +42,11 @@ const ComposeAntDForm = () => {
       form.setFieldsValue({
         avatar: {},
         projects: [],
-        projectsFile: [
+        projectsFile: {
+          name: '滴滴出行行程报销单.pdf',
+          url: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/file/9737/bdb70f83fca63a02bd0d061fb867e18f.pdf',
+        },
+        projectsFile2: [
           {
             name: '滴滴出行行程报销单.pdf',
             url: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/file/9737/bdb70f83fca63a02bd0d061fb867e18f.pdf',
@@ -117,6 +121,27 @@ const ComposeAntDForm = () => {
             extra="只能上传 pdf 或 doc 文件"
             rules={[
               { required: true, message: '请上传项目文件', type: 'array' },
+            ]}
+          >
+            <Uploader
+              valueType="file"
+              oss={oss}
+              uploadProps={{
+                maxCount: 5,
+                action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
+              }}
+              exts={['pdf', 'docx']}
+              signSize={200}
+              crop={false}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="projectsFile"
+            label="项目文件2"
+            extra="只能上传 pdf 或 doc 文件"
+            rules={[
+              { required: true, message: '请上传项目文件2', type: 'array' },
             ]}
           >
             <Uploader
