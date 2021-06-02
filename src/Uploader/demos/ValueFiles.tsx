@@ -40,7 +40,10 @@ const ComposeAntDForm = () => {
   useEffect(() => {
     setTimeout(() => {
       form.setFieldsValue({
-        avatar: {},
+        avatar: {
+          name: '头像',
+          url: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/file/9737/7999e7b5aa948bf41380bf5f8593c68a.jpeg',
+        },
         projects: [],
         projectsFile: {
           name: '滴滴出行行程报销单.pdf',
@@ -164,6 +167,9 @@ const ComposeAntDForm = () => {
               </Button>
               <Button htmlType="reset" onClick={() => form.resetFields()}>
                 reset
+              </Button>
+              <Button onClick={() => form.setFieldsValue({ avatar: {} })}>
+                清空头像
               </Button>
               <Button onClick={() => form.setFieldsValue({ projects: [] })}>
                 清空项目图标

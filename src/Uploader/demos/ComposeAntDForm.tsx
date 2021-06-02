@@ -154,6 +154,9 @@ const ComposeAntDForm = () => {
               <Button htmlType="reset" onClick={() => form.resetFields()}>
                 reset
               </Button>
+              <Button onClick={() => form.setFieldsValue({ avatar: '' })}>
+                清空头像
+              </Button>
               <Button onClick={() => form.setFieldsValue({ projects: [] })}>
                 清空项目图标
               </Button>

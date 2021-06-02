@@ -7,6 +7,7 @@ import classNames from 'classnames';
 
 type SignCardUploadProps = {
   fileUrl: string;
+  // previewType:
   onPreview?: (file: string) => void;
   onDeleteFile?: (file: string) => void;
 };

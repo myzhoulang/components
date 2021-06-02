@@ -21,10 +21,24 @@ export type ValueFile = {
 export type ValueProps = string | Array<string> | ValueFile | Array<ValueFile>;
 
 export type UploaderProps = {
-  // 类型 value是字符串还是文件队形
+  /**
+   * previewType
+   * @description 文件预览形式 false 为不预览
+   * @default 'modal'
+   */
+  previewType: 'modal' | 'page' | false;
+  /**
+   * valueType
+   * @description value是字符串还是文件对象
+   * @default 'string'
+   */
   valueType: 'string' | 'file';
 
-  // 展示文案
+  /**
+   * label
+   * @description 展示文案
+   * @default 'Upload'
+   */
   label?: string;
 
   // 获取OSS 配置数据
@@ -34,7 +48,7 @@ export type UploaderProps = {
    * @description       文件的路径
    * @default
    */
-  value?: ValueProps;
+  value: ValueProps;
   /**
    * exts
    * @description       可以上传的文件扩展名
@@ -64,6 +78,7 @@ export type UploaderProps = {
 };
 
 const defaultProps = {
+  previewType: 'modal',
   valueType: 'string',
   getOSSConfig: noop,
   signSize: 200,
@@ -82,6 +97,7 @@ const Uploader = (originProps: UploaderProps) => {
     crop,
     label,
     valueType,
+    previewType,
   } = props;
 
   const [fileList, setFileList] = useState<Array<UploadFile>>([]);
@@ -158,6 +174,7 @@ const Uploader = (originProps: UploaderProps) => {
 
   // 预览文件
   const preview = (file: UploadFile | string) => {
+    if (!previewType) return;
     const fileUrl = typeof file === 'string' ? file : file.url || file.thumbUrl;
     if (fileUrl) {
       setPreviewImage(fileUrl);
@@ -211,9 +228,6 @@ const Uploader = (originProps: UploaderProps) => {
   useEffect(() => {
     console.log('useEffect');
     if (!isTriggerChange.current) {
-      if (!value) {
-        return;
-      }
       if (!hasValue(value)) {
         setFileList([]);
       } else {
