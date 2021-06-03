@@ -1,6 +1,5 @@
 import React from 'react';
-import 'antd/dist/antd.css';
-import styles from './index.less';
+// import './styles/index.less';
 import { InputNumber } from 'antd';
 import type { InputNumberProps } from 'antd';
 
@@ -8,7 +7,7 @@ export type InputNumberRangeProps = {
   /** inputNumberProps */
   inputNumberProps?: Exclude<InputNumberProps, 'value'>;
   /** value 输入框的值 */
-  value: [number?, number?];
+  value?: [number?, number?];
   /** onChange 输入框中值改变后的回调 */
   onChange?: (value: [(number | string)?, (number | string)?]) => void;
   /** placeholder 输入框的placeholder */
@@ -38,7 +37,7 @@ const InputNumberRange: React.FC<InputNumberRangeProps> = ({
         }}
         {...inputNumberProps}
       />
-      <span className={styles.rangeLine}>-</span>
+      <span className="range-line">-</span>
       <InputNumber
         value={end}
         placeholder={placeholder[1]}

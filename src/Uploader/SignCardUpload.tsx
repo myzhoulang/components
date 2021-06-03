@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
-import type { UploadListProps } from 'antd/es/upload/interface';
+import React from 'react';
 import classnames from 'classnames';
-import style from './index.less';
+import './styles/index.less';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import classNames from 'classnames';
 
 // type PreviewType = Extract<>
 type SignCardUploadProps = {
@@ -49,7 +47,7 @@ const SignCardUpload = (props: SignCardUploadProps) => {
           <div
             className={classnames(
               'ant-upload-list-item-info',
-              style.uploadListItemInto,
+              'upload-list-item-into',
             )}
           >
             <span className="ant-upload-span">

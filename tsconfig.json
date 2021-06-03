@@ -23,6 +23,7 @@
     "es",
     "dist",
     "typings",
+    "**/demo",
     "**/__test__",
     "test",
     "docs",

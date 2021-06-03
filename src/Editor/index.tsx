@@ -7,7 +7,7 @@ import BraftEditor, {
 } from 'braft-editor';
 import 'braft-editor/dist/index.css';
 import { getExtraData, Params, OSS, KeyValue, UploadExtraData } from '../utils';
-import styles from './index.less';
+import './styles/index.less';
 
 type EditorProps = {
   value?: EditorState;
@@ -119,7 +119,7 @@ const Editor: React.FC<EditorProps> = (props) => {
   };
 
   return (
-    <div className={styles.braftEditor}>
+    <div className={'braft-editor'}>
       <BraftEditor
         {...braftEditorProps}
         value={editorState}

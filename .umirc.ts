@@ -1,4 +1,5 @@
 import { defineConfig } from 'dumi';
+import path from 'path';
 
 export default defineConfig({
   title: 'components',
@@ -14,6 +15,16 @@ export default defineConfig({
   cssLoader: {
     localsConvention: 'camelCase',
   },
+  // extraBabelPlugins: [
+  //   [
+  //     'import',
+  //     {
+  //       libraryName: '@zhou.lang/components',
+  //       libraryDirectory: '',
+  //       customStyleName: name => path.resolve(__dirname, `src/${name}/styles/index.less`),
+  //     },
+  //   ],
+  // ],
   // 单语言配置方式如下
   navs: [
     null, // null 值代表保留约定式生成的导航，只做增量配置

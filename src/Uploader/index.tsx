@@ -11,7 +11,7 @@ import SignCardUpload from './SignCardUpload';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
 import { noop, getExtraData, OSS, uploadValid } from '@/utils';
-import style from './index.less';
+import './styles/index.less';
 
 export type FileValue = {
   name: string;
@@ -293,7 +293,7 @@ const Uploader = (originProps: UploaderProps) => {
       const signFile = fileList[0];
       signUrl = signFile?.url;
       props.showUploadList = false;
-      props.className = classnames(props.className, [style.signCard]);
+      props.className = classnames(props.className, 'upload-list-item-into');
       console.log('class', props);
     } else {
       props.fileList = fileList;

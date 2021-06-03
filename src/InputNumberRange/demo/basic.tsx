@@ -10,6 +10,7 @@ export default () => {
   return (
     <Card bordered={false}>
       <InputNumberRange
+        // @ts-ignore
         onChange={change}
         placeholder={['start', 'end']}
         value={value}
