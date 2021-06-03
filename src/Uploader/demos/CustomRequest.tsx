@@ -4,7 +4,7 @@ import { Uploader, util } from '@zhou.lang/components';
 import type { UploadProps } from 'antd';
 import 'antd/dist/antd.css';
 
-import { uploadConfig } from '../../../demo.config';
+import { uploadConfig } from './demo.config';
 const token = uploadConfig.token;
 
 const CustomRequest = () => {

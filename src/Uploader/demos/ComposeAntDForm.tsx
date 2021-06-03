@@ -4,8 +4,8 @@ import { Uploader } from '@zhou.lang/components';
 import type { OSS } from '@zhou.lang/components';
 import 'antd/dist/antd.css';
 
-import { uploadConfig } from '../../../demo.config';
-const token = uploadConfig.token;
+import { uploadConfig } from './demo.config';
+const token: string = uploadConfig.token;
 
 const layout = {
   labelCol: { span: 4 },
@@ -30,6 +30,20 @@ const ComposeAntDForm = () => {
 
   const onFinish = (values: FormData) => {
     console.log('Received values from form: ', values);
+  };
+
+  const getValue = () => {
+    const { avatar, projects, projectsFile, media, ...other } =
+      form.getFieldsValue(true);
+    const values = {
+      // avatar: getFilePath?.(avatar),
+      // projects: getFilePath?.(projects),
+      // projectsFile: getFilePath?.(projectsFile),
+      // media: getFilePath?.(media),
+      ...other,
+    };
+
+    setValue(values);
   };
 
   const oss: OSS = {
@@ -181,9 +195,7 @@ const ComposeAntDForm = () => {
             rows={12}
             value={JSON.stringify(value, null, '\t')}
           ></TextArea>
-          <Button onClick={() => setValue(form.getFieldsValue(true))}>
-            获取表单的值
-          </Button>
+          <Button onClick={getValue}>获取表单的值</Button>
         </Space>
       </Col>
     </Row>

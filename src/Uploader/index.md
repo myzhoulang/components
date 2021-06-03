@@ -24,11 +24,11 @@ nav:
 
 ### 值为对象或对象数组
 
-<code src="./demos/ValueFiles.tsx" title="值为对象或对象数组" />
+<!-- <code src="./demos/ValueFiles.tsx" title="值为对象或对象数组" /> -->
 
 ### 结合 antd 表单校验使用
 
-<!-- <code src="./demos/ComposeAntDForm.tsx" title="结合 antd 表单校验使用" /> -->
+<code src="./demos/ComposeAntDForm.tsx" title="结合 antd 表单校验使用" />
 
 ### API
 

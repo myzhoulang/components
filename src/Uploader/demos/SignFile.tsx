@@ -3,7 +3,7 @@ import { Row, Col } from 'antd';
 import { Uploader } from '@zhou.lang/components';
 import 'antd/dist/antd.css';
 
-import { uploadConfig } from '../../../demo.config';
+import { uploadConfig } from './demo.config';
 const token = uploadConfig.token;
 
 const SignFile = () => {

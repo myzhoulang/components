@@ -23,6 +23,3 @@
 # ide
 /.vscode
 /.idea
-
-# demo
-demo.config.ts

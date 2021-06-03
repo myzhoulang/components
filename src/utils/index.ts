@@ -2,8 +2,10 @@ import { message, Upload } from 'antd';
 import type { UploadProps } from 'antd';
 import SparkMD5 from 'spark-md5';
 
+import type { FileValue, FilesValue } from '../Uploader';
+
 export type OSS = {
-  OSSHeader?: Headers;
+  OSSHeader?: Headers & { token?: string };
   OSSData?: IOSSData;
   OSSAction?: string;
   getOSSData?: () => Promise<IOSSData>;
@@ -197,7 +199,45 @@ export const uploadValid = (file: File, config?: UploadValid) => {
 
   return true;
 };
+// 将 url 转换成 path + search + hash
+const urlToPath = (url: string) => {
+  try {
+    const u = new URL(url);
+    return `${u.pathname.substr(1)}${u.search}${u.hash}`;
+  } catch (e) {
+    return url;
+  }
+};
+
+export const getFilePath = (files: FilesValue) => {
+  if (Array.isArray(files)) {
+    return files.map((item: string | FileValue) => {
+      if (typeof item === 'string') {
+        return urlToPath(item);
+      } else {
+        return {
+          ...item,
+          url: urlToPath(item.url),
+        };
+      }
+    });
+  }
+
+  if (typeof files === 'string') {
+    return urlToPath(files);
+  }
+
+  if (Object.prototype.toString.call(files) === '[object Object]') {
+    return {
+      ...files,
+      url: urlToPath(files.name),
+    };
+  }
+
+  console.error('获取文件路径失败，请检查 files value的类型');
+};
 
 export default {
   getExtraData,
+  getFilePath,
 };

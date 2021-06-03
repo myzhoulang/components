@@ -13,12 +13,12 @@ import ImgCrop from 'antd-img-crop';
 import { noop, getExtraData, OSS, uploadValid } from '@/utils';
 import style from './index.less';
 
-export type ValueFile = {
+export type FileValue = {
   name: string;
   url: string;
 };
 
-export type ValueProps = string | Array<string> | ValueFile | Array<ValueFile>;
+export type FilesValue = string | Array<string> | FileValue | Array<FileValue>;
 
 export type UploaderProps = {
   /**
@@ -26,13 +26,13 @@ export type UploaderProps = {
    * @description 文件预览形式 false 为不预览
    * @default 'modal'
    */
-  previewType: 'modal' | 'page' | false;
+  previewType?: 'modal' | 'page' | false;
   /**
    * valueType
    * @description value是字符串还是文件对象
    * @default 'string'
    */
-  valueType: 'string' | 'file';
+  valueType?: 'string' | 'file';
 
   /**
    * label
@@ -48,7 +48,7 @@ export type UploaderProps = {
    * @description       文件的路径
    * @default
    */
-  value: ValueProps;
+  value?: FilesValue;
   /**
    * exts
    * @description       可以上传的文件扩展名
@@ -74,7 +74,7 @@ export type UploaderProps = {
    */
   uploadProps?: UploadProps;
 
-  onChange?: (urls: ValueProps) => void;
+  onChange?: (urls: FilesValue) => void;
 };
 
 const defaultProps = {
@@ -110,7 +110,7 @@ const Uploader = (originProps: UploaderProps) => {
 
   // 文件上传成功后执行的操作
   // 设置 loading状态、触发 onChange、延迟将 isTriggerChange.current 值改成false
-  const uploadSuccess = (files: ValueProps) => {
+  const uploadSuccess = (files: FilesValue) => {
     lastValue.current = files;
     onChange?.(files);
     setLoading(false);
@@ -131,11 +131,11 @@ const Uploader = (originProps: UploaderProps) => {
       signFile.url = url;
       if (valueType === 'file' && signFile) {
         uploadSuccess({
-          url: url,
+          url: data.path,
           name: signFile.name,
         });
       } else {
-        uploadSuccess(url);
+        uploadSuccess(data.path);
       }
     } else {
       if (fileList.every((item: UploadFile) => item.status === 'done')) {
@@ -216,11 +216,11 @@ const Uploader = (originProps: UploaderProps) => {
     props.uploadProps,
   );
 
-  const maxCount = uploadProps.maxCount;
+  const maxCount = uploadProps.maxCount || 1;
   const isSign = maxCount === 1;
 
   // 判断字符串是否为空或者数组长度是否为0或者不是一个空对象
-  const hasValue = (value: ValueProps) => {
+  const hasValue = (value: FilesValue) => {
     return (
       (typeof value === 'string' && value) ||
       (Array.isArray(value) && value.length > 0) ||
@@ -232,12 +232,12 @@ const Uploader = (originProps: UploaderProps) => {
   useEffect(() => {
     console.log('useEffect');
     if (!isTriggerChange.current) {
-      if (!hasValue(value)) {
+      if (typeof value === 'undefined' || !hasValue(value)) {
         setFileList([]);
       } else {
         let fileList: Array<UploadFile> = [];
         if (Array.isArray(value)) {
-          fileList = value.map((item: string | ValueFile) => {
+          fileList = value.map((item: string | FileValue) => {
             const info: { uid: string; status: UploadFileStatus } = {
               uid: `${Math.random()}`,
               status: 'done',
@@ -269,8 +269,8 @@ const Uploader = (originProps: UploaderProps) => {
               {
                 uid: `${Math.random()}`,
                 status: 'done',
-                name: value.name,
-                url: value.url,
+                name: value?.name || '',
+                url: value?.url,
               },
             ];
           }
