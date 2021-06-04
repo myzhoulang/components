@@ -2,8 +2,7 @@ import _objectSpread from '@babel/runtime/helpers/esm/objectSpread2';
 import 'antd/es/input-number/style';
 import _InputNumber from 'antd/es/input-number';
 import _slicedToArray from '@babel/runtime/helpers/esm/slicedToArray';
-import React from 'react';
-import './styles/index.less';
+import React from 'react'; // import './styles/index.less';
 
 var InputNumberRange = function InputNumberRange(_ref) {
   var _ref$value = _ref.value,

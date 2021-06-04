@@ -10,7 +10,10 @@ import type {
 import SignCardUpload from './SignCardUpload';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
-import { noop, getExtraData, OSS, uploadValid } from '@/utils';
+import { upload } from '../utils';
+import type { OSS } from '../utils/upload/typing';
+const { getUploadData, validFile } = upload;
+
 import './styles/index.less';
 
 export type FileValue = {
@@ -80,7 +83,7 @@ export type UploaderProps = {
 const defaultProps = {
   previewType: 'modal',
   valueType: 'string',
-  getOSSConfig: noop,
+  getOSSConfig: () => {},
   signSize: 200,
   crop: false,
   exts: ['jpg', 'jpeg', 'png'],
@@ -184,7 +187,7 @@ const Uploader = (originProps: UploaderProps) => {
 
   const beforeUpload = async (file: File) => {
     const { oss, uploadProps } = props;
-    const result = uploadValid(file, {
+    const result = validFile(file, {
       exts,
       signSize,
       multiple: uploadProps?.multiple ?? false,
@@ -192,7 +195,7 @@ const Uploader = (originProps: UploaderProps) => {
     if (result === true) {
       // 没有自定义方法
       if (oss && !uploadProps?.customRequest) {
-        const data = await getExtraData(file, oss);
+        const data = await getUploadData(file, oss);
         setData(data);
         setLoading(true);
       }

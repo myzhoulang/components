@@ -2,10 +2,10 @@ export default {
   target: 'browser',
   esm: 'babel',
   entry: [
+    'src/utils/index.ts',
     'src/Editor/index.tsx',
     'src/InputNumberRange/index.tsx',
     'src/Uploader/index.tsx',
-    'src/utils/index.ts',
   ],
   cjs: 'babel',
   umd: {

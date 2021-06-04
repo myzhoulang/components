@@ -6,6 +6,7 @@
     "importHelpers": true,
     "jsx": "react",
     "esModuleInterop": true,
+    "outDir": "dist",
     "sourceMap": true,
     "baseUrl": "./",
     "strict": true,
@@ -14,16 +15,15 @@
       "@/*": ["src/*"],
       "@@/*": ["src/.umi/*"]
     },
-    "lib": ["DOM", "ESNext"],
     "allowSyntheticDefaultImports": true
   },
   "exclude": [
     "node_modules",
     "lib",
+    "**/demos",
     "es",
     "dist",
     "typings",
-    "**/demo",
     "**/__test__",
     "test",
     "docs",

@@ -146,9 +146,9 @@ const ComposeAntDForm = () => {
           </Form.Item>
 
           <Form.Item
-            name="projectsFile"
+            name="projectsFile2"
             label="项目文件2"
-            extra="只能上传 pdf 或 doc 文件"
+            extra="只能上传 pdf 或 doc 或zip 文件"
             rules={[
               { required: true, message: '请上传项目文件2', type: 'array' },
             ]}
@@ -161,7 +161,7 @@ const ComposeAntDForm = () => {
                 maxCount: 5,
                 action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
               }}
-              exts={['pdf', 'docx']}
+              exts={['pdf', 'docx', 'zip']}
               signSize={200}
               crop={false}
             />
