@@ -1,3 +1,3 @@
 export const uploadConfig = {
-  token: '42710e138f27430ead8b03d5cc534d22',
+  token: '8cf8bf5b796b41b783d21b4ac4d370f0',
 };

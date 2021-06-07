@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col } from 'antd';
-import { Uploader, util } from '@zhou.lang/components';
+import { Uploader, utils } from '@zhou.lang/components';
 import type { UploadProps } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -8,6 +8,7 @@ import { uploadConfig } from './demo.config';
 const token = uploadConfig.token;
 
 const CustomRequest = () => {
+  const header = new Headers({ token });
   // 自定义请求方法
   const request: UploadProps['customRequest'] = async ({
     action,
@@ -20,16 +21,17 @@ const CustomRequest = () => {
     onSuccess,
     withCredentials,
   }) => {
-    console.log('customer');
     const form = new FormData();
 
-    const ossData = await util.getExtraData(file, {
-      OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
-      OSSHeader: { token },
-    });
+    let ossData;
+    if (file instanceof File) {
+      ossData = await utils.upload.getUploadData(file, {
+        OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
+        OSSHeader: header,
+      });
+    }
 
     const xhr = new XMLHttpRequest();
-
     Object.entries(ossData).forEach(([key, value]) => {
       form.append(key, value as any);
     });
@@ -92,7 +94,7 @@ const CustomRequest = () => {
         <Uploader
           oss={{
             // getOSSData: getOSSData,
-            OSSHeader: { token },
+            OSSHeader: header,
             OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
           }}
           uploadProps={{

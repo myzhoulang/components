@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Space, Row, Col, Input } from 'antd';
 import { Uploader } from '@zhou.lang/components';
-import type { OSS } from '@zhou.lang/components';
 import 'antd/dist/antd.css';
 
 import { uploadConfig } from './demo.config';
@@ -32,7 +31,7 @@ const ComposeAntDForm = () => {
     console.log('Received values from form: ', values);
   };
 
-  const oss: OSS = {
+  const oss = {
     OSSHeader: { token },
     OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
   };

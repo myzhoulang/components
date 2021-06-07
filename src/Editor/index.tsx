@@ -57,7 +57,9 @@ const Editor: React.FC<EditorProps> = (props) => {
     //   return;
     // }
     if (typeof value === 'string') {
-      return BraftEditor.createEditorState(value);
+      const editorState = BraftEditor.createEditorState(value);
+      onChange?.(editorState);
+      return BraftEditor.createEditorState(editorState);
     } else {
       return value;
     }

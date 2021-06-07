@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Button } from 'antd';
+import { Form, Button, Row, Col, Space, Input } from 'antd';
 import 'antd/dist/antd.css';
 import { Editor } from '@zhou.lang/components';
 import type { UploaderProps } from '../index';
 import { uploadConfig } from '../../Uploader/demos/demo.config';
 const { token } = uploadConfig;
+const { TextArea } = Input;
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 20 },
@@ -15,10 +16,10 @@ const tailLayout = {
 
 const Demo = () => {
   const [uploading, setUploading] = useState(false);
-  const e = useRef();
-
+  const [value, setValue] = useState('');
+  const header = new Headers({ token });
   const oss = {
-    OSSHeader: { token },
+    OSSHeader: header,
     OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
   };
   const uploadProps: UploaderProps = {
@@ -37,6 +38,7 @@ const Demo = () => {
   const onFinish = (values) => {
     // 这里 values 中的 content 是一个 editorState对象
     // 需要 使用 toHTML 方法拿到最终的 html 字符串
+    console.log(values);
     const { content } = values;
     console.log('Received values from form: ', {
       content: content.toHTML(),
@@ -49,13 +51,13 @@ const Demo = () => {
   // 拿到数据后使用表单的 setFieldsValue 设置值
   // 无需再手动处理
 
-  useEffect(() => {
-    setTimeout(() => {
-      form.setFieldsValue({
-        content: '<h1>标题</h1>',
-      });
-    }, 1000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     form.setFieldsValue({
+  //       content: '<h1>标题</h1>',
+  //     });
+  //   }, 1000);
+  // }, []);
 
   // 校验富文本是否必填需要一个自定义一个函数去校验
   // 因为这里的value 是一个 editorState 对象， 对象永远是 ture
@@ -72,29 +74,47 @@ const Demo = () => {
   }
 
   return (
-    <Form form={form} onFinish={onFinish} {...layout}>
-      <Form.Item
-        label="服务内容"
-        name="content"
-        rules={[
-          {
-            required: true,
-          },
-          validateBraftEditor(),
-        ]}
-      >
-        <Editor
-          oss={oss}
-          upload={uploadProps}
-          braftEditorProps={{ contentStyle: { height: '300px' } }}
-        />
-      </Form.Item>
-      <Form.Item {...tailLayout}>
-        <Button type="primary" htmlType="submit" disabled={uploading}>
-          确定
-        </Button>
-      </Form.Item>
-    </Form>
+    <Row>
+      <Col span={12}>
+        <Form
+          form={form}
+          onFinish={onFinish}
+          {...layout}
+          initialValues={{ content: '<h1>标题</h1>' }}
+        >
+          <Form.Item
+            label="服务内容"
+            name="content"
+            rules={[
+              {
+                required: true,
+              },
+              validateBraftEditor(),
+            ]}
+          >
+            <Editor
+              oss={oss}
+              upload={uploadProps}
+              braftEditorProps={{ contentStyle: { height: '300px' } }}
+            />
+          </Form.Item>
+          <Form.Item {...tailLayout}>
+            <Button type="primary" htmlType="submit" disabled={uploading}>
+              确定
+            </Button>
+          </Form.Item>
+        </Form>
+      </Col>
+      <Col span={12}>
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <TextArea
+            rows={12}
+            value={JSON.stringify(value, null, '\t')}
+          ></TextArea>
+          <Button htmlType="submit">获取表单的值</Button>
+        </Space>
+      </Col>
+    </Row>
   );
 };
 export default Demo;
