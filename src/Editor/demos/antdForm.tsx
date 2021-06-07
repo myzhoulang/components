@@ -40,6 +40,7 @@ const Demo = () => {
     // 需要 使用 toHTML 方法拿到最终的 html 字符串
     console.log(values);
     const { content } = values;
+    setValue(content.toHTML());
     console.log('Received values from form: ', {
       content: content.toHTML(),
     });
@@ -74,47 +75,34 @@ const Demo = () => {
   }
 
   return (
-    <Row>
-      <Col span={12}>
-        <Form
-          form={form}
-          onFinish={onFinish}
-          {...layout}
-          initialValues={{ content: '<h1>标题</h1>' }}
-        >
-          <Form.Item
-            label="服务内容"
-            name="content"
-            rules={[
-              {
-                required: true,
-              },
-              validateBraftEditor(),
-            ]}
-          >
-            <Editor
-              oss={oss}
-              upload={uploadProps}
-              braftEditorProps={{ contentStyle: { height: '300px' } }}
-            />
-          </Form.Item>
-          <Form.Item {...tailLayout}>
-            <Button type="primary" htmlType="submit" disabled={uploading}>
-              确定
-            </Button>
-          </Form.Item>
-        </Form>
-      </Col>
-      <Col span={12}>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <TextArea
-            rows={12}
-            value={JSON.stringify(value, null, '\t')}
-          ></TextArea>
-          <Button htmlType="submit">获取表单的值</Button>
-        </Space>
-      </Col>
-    </Row>
+    <Form
+      form={form}
+      onFinish={onFinish}
+      {...layout}
+      initialValues={{ content: '<h1>标题</h1>' }}
+    >
+      <Form.Item
+        label="服务内容"
+        name="content"
+        rules={[
+          {
+            required: true,
+          },
+          validateBraftEditor(),
+        ]}
+      >
+        <Editor
+          oss={oss}
+          upload={uploadProps}
+          braftEditorProps={{ contentStyle: { height: '300px' } }}
+        />
+      </Form.Item>
+      <Form.Item {...tailLayout}>
+        <Button type="primary" htmlType="submit" disabled={uploading}>
+          确定
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 export default Demo;

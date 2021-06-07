@@ -34,28 +34,28 @@ nav:
 #### IOSSData
 
 | 参数      | 说明                 | 类型     | 默认值 | 版本 |
-| --------- | -------------------- | -------- | ------ | ---- |
-| dir       | 要上传的目录         | `string` | -      |      |
-| expire    | 过期时间             | `string` | -      |      |
-| host      | 上传文件的 host      | `string` | -      |      |
-| accessId  | AccessKeyId          | `string` | -      |      |
-| policy    | 授权策略             | `string` | -      |      |
-| signature | OSS 签名             | `string` | -      |      |
-| callback  | 上传成功后的回调函数 | `string` | -      |      |
+| :-------- | :------------------- | :------- | :----- | ---: |
+| dir       | 要上传的目录         | `string` | -      |    - |
+| expire    | 过期时间             | `string` | -      |    - |
+| host      | 上传文件的 host      | `string` | -      |    - |
+| accessId  | AccessKeyId          | `string` | -      |    - |
+| policy    | 授权策略             | `string` | -      |    - |
+| signature | OSS 签名             | `string` | -      |    - |
+| callback  | 上传成功后的回调函数 | `string` | -      |    - |
 
 #### UploadProps
 
-| 参数          | 说明                                       | 类型                                              | 默认值         | 版本 |
-| ------------- | ------------------------------------------ | ------------------------------------------------- | -------------- | ---- | --- |
-| getOSSData    | 获取 OSS 信息的方法, [IOSSData](#iossdata) | `() => Promise<IOSSData>`                         | -              |      |
-| OSSData       | OSS 信息,[IOSSData](#iossdata)`            | `IOSSData`                                        | -              |      |     |
-| customUpload  | 自定义上传文件方法                         | `(fd: FormData, params?: Params) => Promise<any>` | -              |      |
-| serverUrl     | 默认上传文件的地址                         | `string`                                          | -              |      |
-| onBeforeStart | 文件上传之前的准备工作                     | `(file: File, editor: BraftEditor                 | null) =>void ` | -    |     |
-| onStart       | 文件开始上传                               | `(data: FormData) => void`                        | -              |      |
-| onProgress    | 文件上传中                                 | `(current: number, total: number) => void`        | -              |      |
-| onSuccess     | 文件上传成功后                             | `(data: any) => void`                             | -              |      |
-| onFinsh       | 上传完成（成功、失败、或取消都会执行）     | `(result: FinshResult, editor: BraftEditor        | null) => void` |      |     |
+| 参数          | 说明                                       | 类型                                                         | 默认值 |
+| ------------- | ------------------------------------------ | ------------------------------------------------------------ | -----: |
+| getOSSData    | 获取 OSS 信息的方法, [IOSSData](#iossdata) | `() => Promise<IOSSData>`                                    |      - |
+| OSSData       | OSS 信息,[IOSSData](#iossdata)             | `IOSSData`                                                   |      - |
+| customUpload  | 自定义上传文件方法                         | `(fd: FormData, params?: Params) => Promise<any>`            |      - |
+| serverUrl     | 默认上传文件的地址                         | `string`                                                     |      - |
+| onBeforeStart | 文件上传之前的准备工作                     | `(file: File, editor: BraftEditor \| null) =>void `          |      - |
+| onStart       | 文件开始上传                               | `(data: FormData) => void`                                   |      - |
+| onProgress    | 文件上传中                                 | `(current: number, total: number) => void`                   |      - |
+| onSuccess     | 文件上传成功后                             | `(data: any) => void`                                        |      - |
+| onFinsh       | 上传完成（成功、失败、或取消都会执行）     | `(result: FinshResult, editor: BraftEditor \| null) => void` |      - |
 
 ## 注意事项
 
