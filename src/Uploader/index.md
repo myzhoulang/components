@@ -16,11 +16,11 @@ nav:
 
 ### 基本用法 单个文件
 
-<!-- <code src="./demos/SignFile.tsx" title="单个文件" /> -->
+<code src="./demos/SignFile.tsx" title="单个文件" />
 
 ### 自定义请求方法
 
-<!-- <code src="./demos/CustomRequest.tsx" title="自定义请求方法" /> -->
+<code src="./demos/CustomRequest.tsx" title="自定义请求方法" />
 
 ### 值为对象或对象数组
 
@@ -28,21 +28,21 @@ nav:
 
 ### 结合 antd 表单校验使用
 
-<!-- <code src="./demos/ComposeAntDForm.tsx" title="结合 antd 表单校验使用" /> -->
+<code src="./demos/ComposeAntDForm.tsx" title="结合 antd 表单校验使用" />
 
 ### API
 
 #### Uploder
 
-| 属性        | 说明                                                                         | 类型                                 | 默认值                              |
-| ----------- | ---------------------------------------------------------------------------- | ------------------------------------ | ----------------------------------- |
-| oss         | 文件上传到`oss`时候，获取`oss`信息的配置                                     | OSS                                  | --                                  |
-| value       | 文件的路径                                                                   | `string \| string[]`                 | --                                  |
-| exts        | 可以上传的文件扩展名                                                         | `string[]`                           | `['jpg', 'jpeg', 'png']`            |
-| signSize    | 单个文件的最大尺寸 单位： `KB`                                               | `number`                             | `200`                               |
-| crop        | 是否需要对文件进行裁剪                                                       | `boolean`                            | `false`                             |
-| uploadProps | antd 的 [uploadProps](https://ant.design/components/upload-cn/#API)          | `UploadProps<any>`                   | `{ listType: 'text', maxCount: 1 }` |
-| onChange    | 只有在上传的文件状态为 `done`时触发， 和 `antd`中`upload`的 `onChange`不一样 | `(urls: string \| string[]) => void` | --                                  |
+| 属性        | 说明                                                                         | 类型                                                | 默认值                              |
+| ----------- | ---------------------------------------------------------------------------- | --------------------------------------------------- | ----------------------------------- |
+| oss         | 文件上传到`oss`时候，获取`oss`信息的配置                                     | OSS                                                 | --                                  |
+| value       | 文件的路径                                                                   | `string \| string[]\|FileValue \| Array<FileValue>` | --                                  |
+| exts        | 可以上传的文件扩展名                                                         | `string[]`                                          | `['jpg', 'jpeg', 'png']`            |
+| signSize    | 单个文件的最大尺寸 单位： `KB`                                               | `number`                                            | `200`                               |
+| crop        | 是否需要对文件进行裁剪                                                       | `boolean`                                           | `false`                             |
+| uploadProps | antd 的 [uploadProps](https://ant.design/components/upload-cn/#API)          | `UploadProps<any>`                                  | `{ listType: 'text', maxCount: 1 }` |
+| onChange    | 只有在上传的文件状态为 `done`时触发， 和 `antd`中`upload`的 `onChange`不一样 | `(urls: string \| string[]) => void`                | --                                  |
 
 ### OSS
 

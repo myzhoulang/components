@@ -1,5 +1,5 @@
 import React from 'react';
-// import './styles/index.less';
+import './styles/index.less';
 import { InputNumber } from 'antd';
 import type { InputNumberProps } from 'antd';
 

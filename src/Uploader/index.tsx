@@ -130,8 +130,7 @@ const Uploader = (originProps: UploaderProps) => {
     isTriggerChange.current = true;
     const signFile = fileList[0];
     if (isSign && signFile?.status === 'done') {
-      const url = data.host + '/' + data.path;
-      signFile.url = url;
+      signFile.url = data.host + '/' + data.path;
       if (valueType === 'file' && signFile) {
         uploadSuccess({
           url: data.path,
@@ -310,7 +309,6 @@ const Uploader = (originProps: UploaderProps) => {
           <div style={{ marginTop: 8 }}>{label ?? 'Unpload'}</div>
         </div>
       );
-
       const uploadButton = () => {
         if (isSign) {
           console.log('previewType', previewType);
