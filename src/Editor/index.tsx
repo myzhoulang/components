@@ -1,5 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import type { UploadProps } from 'antd';
+// @ts-ignore
 import { ContentUtils } from 'braft-utils';
 import BraftEditor, {
   BraftEditorProps,
