@@ -122,7 +122,7 @@ const Editor: React.FC<EditorProps> = (props) => {
       const result = validFile(param.file, config);
       // 校验不通过
       if (!(result === true)) {
-        onAbort('请校验上传的文件格式和大小');
+        onAbort();
         return;
       }
       // 开始上传
@@ -177,7 +177,7 @@ const Editor: React.FC<EditorProps> = (props) => {
         });
       }
 
-      function onAbort(message: string = '上传被取消') {
+      function onAbort() {
         onFinsh?.({ status: 400, message: '上传被取消' }, editor.current);
         param.error({
           msg: '上传失败',
