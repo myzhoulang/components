@@ -12,6 +12,8 @@ import { filterXSS } from 'xss';
 import { upload } from '../utils';
 import type { OSS, KeyValue, Params } from '../utils/upload/typing';
 import './styles/index.less';
+import { validFile } from '@/utils/upload';
+import { ValidFileProps } from '@/utils/upload/validFile';
 
 const { getUploadData } = upload;
 
@@ -22,6 +24,11 @@ type FinshResult = {
 
 export type UploaderProps = UploadProps & {
   customUpload?: (data: KeyValue) => Promise<any>;
+  // 可上传的文件后缀名
+  exts?: Array<string>;
+  // 单个文件大小限制
+  signSize?: number;
+  // 文件上传地址
   action?: string;
   // 上传之前，比如 上传之前需要获取 oss 信息
   onBeforeStart?: (file: File, editor: BraftEditor | null) => void;
@@ -55,9 +62,6 @@ const Editor: React.FC<EditorProps> = (props) => {
   const editor = useRef<BraftEditor>(null);
   const isUpadding = useRef(false);
   const editorState = useMemo(() => {
-    // if (isUpadding.current) {
-    //   return;
-    // }
     if (typeof value === 'string') {
       const editorState = BraftEditor.createEditorState(value);
       onChange?.(editorState);
@@ -106,6 +110,21 @@ const Editor: React.FC<EditorProps> = (props) => {
 
   const uploadFn: MediaType['uploadFn'] = async (param: Params) => {
     try {
+      const { exts, signSize } = upload;
+      const config: ValidFileProps = {};
+      if (exts) {
+        config.exts = exts;
+      }
+      if (signSize) {
+        config.signSize = signSize;
+      }
+
+      const result = validFile(param.file, config);
+      // 校验不通过
+      if (!(result === true)) {
+        onAbort('请校验上传的文件格式和大小');
+        return;
+      }
       // 开始上传
       onBeforeStart?.(param.file, editor.current);
       const ossData = await getUploadData(param.file, oss);
@@ -158,7 +177,7 @@ const Editor: React.FC<EditorProps> = (props) => {
         });
       }
 
-      function onAbort() {
+      function onAbort(message: string = '上传被取消') {
         onFinsh?.({ status: 400, message: '上传被取消' }, editor.current);
         param.error({
           msg: '上传失败',

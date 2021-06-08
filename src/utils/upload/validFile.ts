@@ -1,6 +1,6 @@
 import { message, Upload } from 'antd';
 // 上传之前的拦截
-type ValidFileProps = {
+export type ValidFileProps = {
   exts?: Array<string>;
   signSize?: number;
   multiple?: boolean;
@@ -15,15 +15,20 @@ const getFileExtendingName = (filename: string = '') => {
 
 const validFile = (file: File, config?: ValidFileProps) => {
   const conf = Object.assign(
-    { exts: [], signSize: 200, multiple: false },
+    {
+      exts: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+      signSize: 200,
+      multiple: false,
+    },
     config,
   );
+  console.log('conf', conf);
   const ext = getFileExtendingName(file.name);
   const isType = conf?.exts?.includes(ext);
   const isSize = file.size / 1024 < conf?.signSize;
 
   if (!isType) {
-    message.error(`${file.name} 文件格式不正确`);
+    message.error(`${file.name} 文件格式不正确, 请上传${conf.exts}的文件`);
     return Upload.LIST_IGNORE;
   }
 
