@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Button, Row, Col, Space, Input } from 'antd';
-import 'antd/dist/antd.css';
+import BraftEditor from 'braft-editor';
 import { Editor } from '@zhou.lang/components';
 import type { UploaderProps } from '../index';
 import { uploadConfig } from '../../Uploader/demos/demo.config';
@@ -40,7 +40,7 @@ const Demo = () => {
     // 需要 使用 toHTML 方法拿到最终的 html 字符串
     console.log(values);
     const { content } = values;
-    setValue(content.toHTML());
+    // setValue(content.toHTML());
     console.log('Received values from form: ', {
       content: content.toHTML(),
     });

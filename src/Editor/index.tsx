@@ -1,11 +1,13 @@
 import React, { useMemo, useRef } from 'react';
 import type { UploadProps } from 'antd';
+import { ContentUtils } from 'braft-utils';
 import BraftEditor, {
   BraftEditorProps,
   EditorState,
   MediaType,
 } from 'braft-editor';
 import 'braft-editor/dist/index.css';
+import { filterXSS } from 'xss';
 import { upload } from '../utils';
 import type { OSS, KeyValue, Params } from '../utils/upload/typing';
 import './styles/index.less';
@@ -52,7 +54,6 @@ const Editor: React.FC<EditorProps> = (props) => {
   const editor = useRef<BraftEditor>(null);
   const isUpadding = useRef(false);
   const editorState = useMemo(() => {
-    console.log('memo', isUpadding.current);
     // if (isUpadding.current) {
     //   return;
     // }
@@ -64,6 +65,36 @@ const Editor: React.FC<EditorProps> = (props) => {
       return value;
     }
   }, [value]);
+
+  // 对粘贴的内容做处理 主要是对 html的输入
+  // 对一些脚本做过滤和危险属性做过滤处理
+  const handlePasted = (html: string | undefined) => {
+    console.log('origin =>', html);
+    if (!html) return html;
+    // 首先去除所有on开头的属性
+    const stripedHTMLString = filterXSS(
+      html
+        .replaceAll(/on(\w+)\s*=\s*(".*?")/gi, function () {
+          return '\n';
+        })
+        .replaceAll('&quot;', "'")
+        .replaceAll('&amp;', '&'),
+    );
+
+    console.log('striped =>', stripedHTMLString);
+
+    onChange?.(
+      ContentUtils.insertHTML(editorState, stripedHTMLString, 'paste'),
+    );
+    return 'handled';
+  };
+
+  braftEditorProps.draftProps = {
+    // @ts-ignore
+    handlePastedText(text: string, html: string | undefined) {
+      return handlePasted(html);
+    },
+  };
 
   function change(editorState: EditorState) {
     if (onChange) {
