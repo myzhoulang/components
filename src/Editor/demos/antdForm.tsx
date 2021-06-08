@@ -23,6 +23,7 @@ const Demo = () => {
     OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
   };
   const uploadProps: UploaderProps = {
+    exts: ['jpg', 'jpeg'],
     onBeforeStart(file, editor) {
       setUploading(true);
     },

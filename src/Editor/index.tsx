@@ -12,8 +12,8 @@ import { filterXSS } from 'xss';
 import { upload } from '../utils';
 import type { OSS, KeyValue, Params } from '../utils/upload/typing';
 import './styles/index.less';
-import { validFile } from '@/utils/upload';
-import { ValidFileProps } from '@/utils/upload/validFile';
+import { validFile } from '../utils/upload';
+import { ValidFileProps } from '../utils/upload/validFile';
 
 const { getUploadData } = upload;
 

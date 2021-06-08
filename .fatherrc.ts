@@ -18,6 +18,7 @@ export default {
   },
   runtimeHelpers: true,
   extractCSS: true,
+  // lessInBabelMode: true,
   extraBabelPlugins: [
     [
       'import',
