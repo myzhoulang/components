@@ -4,7 +4,7 @@ import type { UploadProps } from 'antd';
 import { ContentUtils } from 'braft-utils';
 import BraftEditor, { EditorState, MediaType } from 'braft-editor';
 import 'braft-editor/dist/index.css';
-import { filterXSS } from 'xss';
+import sanitizeHtml from 'sanitize-html';
 import { upload } from '../utils';
 import type { Params } from '../utils/upload/typing';
 import type { EditorProps } from './typing';
@@ -22,6 +22,7 @@ const Editor: React.FC<EditorProps> = (props) => {
     upload = {},
     braftEditorProps = {},
     oss = {},
+    sanitize,
   } = props;
   const { onBeforeStart, onStart, onFinsh } = upload;
   const editor = useRef<BraftEditor>(null);
@@ -41,14 +42,93 @@ const Editor: React.FC<EditorProps> = (props) => {
   const handlePasted = (html: string | undefined) => {
     console.log('origin =>', html);
     if (!html) return html;
-    // 首先去除所有on开头的属性
-    const stripedHTMLString = filterXSS(
-      html
-        .replaceAll(/on(\w+)\s*=\s*(".*?")/gi, function () {
-          return '\n';
-        })
-        .replaceAll('&quot;', "'")
-        .replaceAll('&amp;', '&'),
+    console.log(111);
+    // 对复制的文本进行过滤
+    const stripedHTMLString = sanitizeHtml(
+      html,
+      Object.assign(
+        {
+          allowedTags: [
+            'address',
+            'article',
+            'aside',
+            'footer',
+            'header',
+            'h1',
+            'h2',
+            'h3',
+            'h4',
+            'h5',
+            'h6',
+            'hgroup',
+            'main',
+            'nav',
+            'section',
+            'blockquote',
+            'dd',
+            'div',
+            'dl',
+            'dt',
+            'figcaption',
+            'figure',
+            'hr',
+            'li',
+            'main',
+            'ol',
+            'p',
+            'pre',
+            'ul',
+            'a',
+            'abbr',
+            'b',
+            'bdi',
+            'bdo',
+            'br',
+            'cite',
+            'code',
+            'data',
+            'dfn',
+            'em',
+            'i',
+            'kbd',
+            'mark',
+            'q',
+            'rb',
+            'rp',
+            'rt',
+            'rtc',
+            'ruby',
+            's',
+            'samp',
+            'small',
+            'span',
+            'strong',
+            'sub',
+            'sup',
+            'time',
+            'u',
+            'var',
+            'wbr',
+            'caption',
+            'col',
+            'colgroup',
+            'table',
+            'tbody',
+            'td',
+            'tfoot',
+            'th',
+            'thead',
+            'tr',
+            'img',
+          ],
+          allowedAttributes: {
+            '*': ['style', 'title', 'id'],
+            a: ['href', 'name', 'target'],
+            img: ['src', 'alt'],
+          },
+        },
+        sanitize,
+      ),
     );
 
     console.log('striped =>', stripedHTMLString);

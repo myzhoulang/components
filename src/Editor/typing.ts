@@ -1,5 +1,6 @@
 import type { UploadProps } from 'antd';
 import BraftEditor, { BraftEditorProps, EditorState } from 'braft-editor';
+import sanitize from 'sanitize-html';
 import type { OSS } from '../utils/upload/typing';
 
 export type FinshResult = {
@@ -32,4 +33,5 @@ export type EditorProps = {
   braftEditorProps?: BraftEditorProps;
   upload?: UploaderProps;
   oss?: OSS;
+  sanitize?: sanitize.IOptions;
 };
