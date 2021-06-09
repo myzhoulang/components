@@ -18,8 +18,6 @@ export type Options = {
   oss?: OSS;
 };
 
-export const noop = () => {};
-
 // OSS 信息
 export type IOSSData = {
   path: string;
@@ -51,9 +49,6 @@ export type Params = {
   error: (err: { msg: string }) => void;
 };
 
-export type KeyValue = {
-  [key: string]: any;
-};
 export type UploadExtraData = {
   host: string;
   path: string;
@@ -63,3 +58,5 @@ export type UploadExtraData = {
   Signature: string;
   callback: string;
 };
+
+export type GetFileMd5 = (file: File) => Promise<string | null | DOMException>;

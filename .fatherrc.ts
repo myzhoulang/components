@@ -1,12 +1,13 @@
 export default {
   target: 'browser',
   esm: 'babel',
-  entry: [
-    'src/utils/index.ts',
-    'src/Editor/index.tsx',
-    'src/InputNumberRange/index.tsx',
-    'src/Uploader/index.tsx',
-  ],
+  entry: 'src/index.ts',
+  // entry: [
+  //   'src/utils/index.ts',
+  //   'src/Editor/index.tsx',
+  //   'src/InputNumberRange/index.tsx',
+  //   'src/Uploader/index.tsx',
+  // ],
   cjs: 'babel',
   umd: {
     name: 'zc',
@@ -18,7 +19,7 @@ export default {
   },
   runtimeHelpers: true,
   extractCSS: true,
-  // lessInBabelMode: true,
+  lessInBabelMode: true,
   extraBabelPlugins: [
     [
       'import',

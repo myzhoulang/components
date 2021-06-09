@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Space, Row, Col, Input } from 'antd';
 import { Uploader } from '@zhou.lang/components';
-import type { OSS } from '@zhou.lang/components';
+import type { OSS } from '@zhou.lang/components/es/utils/upload/typing';
 import 'antd/dist/antd.css';
 
 import { uploadConfig } from './demo.config';
@@ -47,7 +47,7 @@ const ComposeAntDForm = () => {
   };
 
   const oss: OSS = {
-    OSSHeader: { token },
+    OSSHeader: new Headers({ token }),
     OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
   };
 

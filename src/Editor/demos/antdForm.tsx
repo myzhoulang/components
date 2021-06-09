@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Form, Button, Row, Col, Space, Input } from 'antd';
-import BraftEditor from 'braft-editor';
+import React, { useState } from 'react';
+import { Form, Button, Input } from 'antd';
 import { Editor } from '@zhou.lang/components';
 import type { UploaderProps } from '../index';
 import { uploadConfig } from '../../Uploader/demos/demo.config';
@@ -98,6 +97,7 @@ const Demo = () => {
           braftEditorProps={{ contentStyle: { height: '300px' } }}
         />
       </Form.Item>
+
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit" disabled={uploading}>
           确定

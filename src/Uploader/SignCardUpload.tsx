@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import './styles/index.less';
+import './index.less';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 
 // type PreviewType = Extract<>

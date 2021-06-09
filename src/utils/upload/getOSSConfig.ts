@@ -51,10 +51,6 @@ export type Params = {
   error: (err: { msg: string }) => void;
 };
 
-export type KeyValue = {
-  [key: string]: any;
-};
-
 // 默认获取 oss 配置方法
 // 当需要获取oss配置数据的时候，只提供了一个获取 oss 配置的 api 时使用
 const getOSSDataForAction = (url: string, header?: Headers) => {

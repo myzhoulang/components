@@ -1,11 +1,12 @@
 import SparkMD5 from 'spark-md5';
+import { GetFileMd5 } from './typing';
 
 /**
  * 获取文件的md5值，用作文件名称
  * @param file 要上传的文件
  * @returns 文件的 MD5
  */
-const getFileMD5 = (file: File) => {
+const getFileMD5: GetFileMd5 = (file: File) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     const spark = new SparkMD5.ArrayBuffer();
@@ -17,7 +18,7 @@ const getFileMD5 = (file: File) => {
       resolve(spark.end());
     };
     reader.onerror = (e) => {
-      reject(e);
+      reject(reader.error);
     };
   });
 };
