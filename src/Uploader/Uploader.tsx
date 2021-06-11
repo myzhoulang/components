@@ -136,7 +136,7 @@ const Uploader = (originProps: UploaderProps) => {
           setLoading(true);
         } catch (e) {
           message.error(String(e));
-          return false;
+          return Upload.LIST_IGNORE;
         }
       }
     }
