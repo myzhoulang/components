@@ -14,8 +14,8 @@ const getUploadData: (
 ) => Promise<UploadExtraData | void> = async (file, oss) => {
   const ext = file.name.substr(file.name.lastIndexOf('.'));
 
-  return Promise.all([getFileMD5(file), getOSSConfig(oss)])
-    .then(([md5, oss]) => {
+  return Promise.all([getFileMD5(file), getOSSConfig(oss)]).then(
+    ([md5, oss]) => {
       const { dir, host, accessId, policy, signature, callback } = oss;
       const path = `${dir}${md5}${ext}`;
       file.server_url = `${host}/${dir}${md5}${ext}`;
@@ -28,10 +28,8 @@ const getUploadData: (
         Signature: signature,
         callback: callback,
       };
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+    },
+  );
 };
 
 export default getUploadData;

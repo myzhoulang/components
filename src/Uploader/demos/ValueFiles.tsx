@@ -32,7 +32,7 @@ const ComposeAntDForm = () => {
   };
 
   const oss = {
-    OSSHeader: { token },
+    OSSHeader: new Headers({ token }),
     OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
   };
 

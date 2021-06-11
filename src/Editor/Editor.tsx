@@ -1,5 +1,4 @@
 import React, { useMemo, useRef } from 'react';
-import type { UploadProps } from 'antd';
 // @ts-ignore
 import { ContentUtils } from 'braft-utils';
 import BraftEditor, { EditorState, MediaType } from 'braft-editor';
@@ -26,7 +25,6 @@ const Editor: React.FC<EditorProps> = (props) => {
   } = props;
   const { onBeforeStart, onStart, onFinsh } = upload;
   const editor = useRef<BraftEditor>(null);
-  const isUpadding = useRef(false);
   const editorState = useMemo(() => {
     if (typeof value === 'string') {
       const editorState = BraftEditor.createEditorState(value);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import classnames from 'classnames';
-import { Upload, Button, Modal } from 'antd';
+import { Upload, Button, Modal, message } from 'antd';
 import type { UploadProps } from 'antd';
 import type {
   UploadFile,
@@ -126,12 +126,18 @@ const Uploader = (originProps: UploaderProps) => {
       signSize,
       multiple: uploadProps?.multiple ?? false,
     });
+
     if (result === true) {
       // 没有自定义方法
       if (oss && !uploadProps?.customRequest) {
-        const data = await getUploadData(file, oss);
-        setData(data);
-        setLoading(true);
+        try {
+          const data = await getUploadData(file, oss);
+          setData(data);
+          setLoading(true);
+        } catch (e) {
+          message.error(String(e));
+          return false;
+        }
       }
     }
 
