@@ -40,7 +40,6 @@ const Editor: React.FC<EditorProps> = (props) => {
   const handlePasted = (html: string | undefined) => {
     console.log('origin =>', html);
     if (!html) return html;
-    console.log(111);
     // 对复制的文本进行过滤
     const stripedHTMLString = sanitizeHtml(
       html,
