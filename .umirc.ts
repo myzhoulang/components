@@ -41,7 +41,7 @@ export default defineConfig({
       },
       {
         title: '数据录入',
-        children: ['InputNumberRange', 'Editor', 'Uploader'],
+        children: ['InputNumberRange', 'Editor', 'Uploader', 'ProFormCascader'],
       },
     ],
   },

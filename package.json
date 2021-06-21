@@ -32,6 +32,8 @@
     ]
   },
   "dependencies": {
+    "@ant-design/pro-form": "^1.29.1",
+    "@ant-design/pro-provider": "^1.4.14",
     "@babel/runtime": "^7.14.0",
     "antd-img-crop": "^3.14.1",
     "braft-editor": "^2.3.9",
