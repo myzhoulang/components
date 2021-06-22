@@ -101,7 +101,7 @@ export default () => {
 
       <ProFormCascader
         label="级联"
-        fieldProps={{ options: options }}
+        fieldProps={{ options: options, changeOnSelect: true }}
         name="cascader"
         readonly={mode}
       />
