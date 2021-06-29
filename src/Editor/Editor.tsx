@@ -11,6 +11,7 @@ import { validFile } from '../utils/upload';
 import { ValidFileProps } from '../utils/upload/validFile';
 
 import './index.less';
+import { message } from 'antd';
 
 const { getUploadData } = upload;
 
@@ -257,7 +258,10 @@ const Editor: React.FC<EditorProps> = (props) => {
       xhr.addEventListener('abort', onAbort, false);
     } catch (error) {
       onFinsh?.({ status: 400, message: error }, editor.current);
-      console.error('上传失败 ===》 ', error);
+      param.error({
+        msg: `${error.message}`,
+      });
+      message.error(error.message);
     }
   };
 

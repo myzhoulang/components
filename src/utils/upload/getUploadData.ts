@@ -16,18 +16,22 @@ const getUploadData: (
 
   return Promise.all([getFileMD5(file), getOSSConfig(oss)]).then(
     ([md5, oss]) => {
-      const { dir, host, accessId, policy, signature, callback } = oss;
-      const path = `${dir}${md5}${ext}`;
-      file.server_url = `${host}/${dir}${md5}${ext}`;
-      return {
-        host: host,
-        path: path,
-        key: path,
-        OSSAccessKeyId: accessId,
-        policy: policy,
-        Signature: signature,
-        callback: callback,
-      };
+      try {
+        const { dir, host, accessId, policy, signature, callback } = oss;
+        const path = `${dir}${md5}${ext}`;
+        file.server_url = `${host}/${dir}${md5}${ext}`;
+        return {
+          host: host,
+          path: path,
+          key: path,
+          OSSAccessKeyId: accessId,
+          policy: policy,
+          Signature: signature,
+          callback: callback,
+        };
+      } catch (error) {
+        return Promise.reject(error);
+      }
     },
   );
 };
