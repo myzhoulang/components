@@ -95,7 +95,7 @@ const ComposeAntDForm = () => {
                 action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com/',
               }}
               exts={['png', 'jpeg']}
-              signSize={200}
+              signSize={20000}
               crop={false}
             />
           </Form.Item>

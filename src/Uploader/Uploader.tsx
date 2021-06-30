@@ -68,11 +68,11 @@ const Uploader = (originProps: UploaderProps) => {
       signFile.url = data.host + '/' + data.path;
       if (valueType === 'file' && signFile) {
         uploadSuccess({
-          url: data.path,
+          url: signFile.url,
           name: signFile.name,
         });
       } else {
-        uploadSuccess(data.path);
+        uploadSuccess(signFile.url);
       }
     } else {
       if (fileList.every((item: UploadFile) => item.status === 'done')) {
@@ -80,13 +80,13 @@ const Uploader = (originProps: UploaderProps) => {
           const files = fileList.map((item: any) => {
             return {
               name: item.name,
-              url: item.url || item?.response?.filename,
+              url: item.url || data.host + '/' + item?.response?.filename,
             };
           });
           uploadSuccess(files);
         } else {
           const urls = fileList.map((item: any) => {
-            return item.url || item?.response?.filename;
+            return item.url || data.host + '/' + item?.response?.filename;
           });
           uploadSuccess(urls);
         }
