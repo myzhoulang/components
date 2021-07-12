@@ -1,4 +1,5 @@
 import React, { useMemo, useRef } from 'react';
+import { merge } from 'lodash-es';
 // @ts-ignore
 import { ContentUtils } from 'braft-utils';
 import BraftEditor, { EditorState, MediaType } from 'braft-editor';
@@ -137,13 +138,6 @@ const Editor: React.FC<EditorProps> = (props) => {
     return 'handled';
   };
 
-  braftEditorProps.draftProps = {
-    // @ts-ignore
-    handlePastedText(text: string, html: string | undefined) {
-      return handlePasted(html);
-    },
-  };
-
   function change(editorState: EditorState) {
     if (onChange) {
       console.log('change');
@@ -265,14 +259,37 @@ const Editor: React.FC<EditorProps> = (props) => {
     }
   };
 
+  const defulatBraftEditorProps = {
+    draftProps: {
+      handlePastedText(text: string, html: string | undefined) {
+        return handlePasted(html);
+      },
+    },
+    media: {
+      uploadFn,
+    },
+  };
+
+  const _braftEditorProps = merge(defulatBraftEditorProps, braftEditorProps);
+  console.log('_braftEditorProps', _braftEditorProps);
+
+  // braftEditorProps.draftProps = {
+  //   // @ts-ignore
+  //   handlePastedText(text: string, html: string | undefined) {
+  //     return handlePasted(html);
+  //   },
+  // };
+  // braftEditorProps.media = {
+  //   uploadFn: uploadFn,
+  // };
+
   return (
     <div className={'braft-editor'}>
       <BraftEditor
-        {...braftEditorProps}
+        {..._braftEditorProps}
         ref={editor}
         value={editorState}
         onChange={change}
-        media={{ uploadFn: uploadFn }}
       />
     </div>
   );

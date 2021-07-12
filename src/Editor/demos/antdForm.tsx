@@ -94,7 +94,15 @@ const Demo = () => {
         <Editor
           oss={oss}
           upload={uploadProps}
-          braftEditorProps={{ contentStyle: { height: '300px' } }}
+          braftEditorProps={{
+            contentStyle: { height: '300px' },
+            media: {
+              accepts: {
+                image: 'image/png',
+                video: 'video/x-flv',
+              },
+            },
+          }}
         />
       </Form.Item>
 
