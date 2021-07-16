@@ -1,5 +1,6 @@
 import type { OSS } from '../utils/upload/typing';
 import type { UploadProps } from 'antd';
+import React from 'react';
 
 export type FileValue = {
   name: string;
@@ -61,6 +62,8 @@ export type UploaderProps = {
    * @default           { listType: 'text', maxCount: 1 }
    */
   uploadProps?: UploadProps;
+
+  icon?: React.ReactNode;
 
   onChange?: (urls: FilesValue) => void;
 };

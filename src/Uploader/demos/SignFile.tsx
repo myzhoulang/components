@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col } from 'antd';
+import { LinkOutlined } from '@ant-design/icons';
 import { Uploader } from '@zhou.lang/components';
 import 'antd/dist/antd.css';
 
@@ -11,6 +12,7 @@ const SignFile = () => {
     <Row gutter={20}>
       <Col span={12}>
         <Uploader
+          icon={<LinkOutlined />}
           oss={{
             OSSHeader: new Headers({ token }),
             OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',

@@ -22,11 +22,12 @@ const defaultProps = {
   getOSSConfig: () => {},
   signSize: 200,
   crop: false,
+  icon: <PlusOutlined />,
   exts: ['jpg', 'jpeg', 'png'],
   accept: 'image/jpg, image/png, image/jpeg',
 };
 
-const Uploader = (originProps: UploaderProps) => {
+const Uploader: React.FC<UploaderProps> = (originProps) => {
   const props = Object.assign({ ...defaultProps }, originProps);
   const {
     value,
@@ -37,6 +38,7 @@ const Uploader = (originProps: UploaderProps) => {
     label,
     valueType,
     previewType,
+    icon,
   } = props;
 
   const [fileList, setFileList] = useState<Array<UploadFile>>([]);
@@ -246,7 +248,7 @@ const Uploader = (originProps: UploaderProps) => {
       const listType = uploadProps.listType;
       const cardButton = (
         <div>
-          {loading ? <LoadingOutlined /> : <PlusOutlined />}
+          {loading ? <LoadingOutlined /> : icon ?? <PlusOutlined />}
           <div style={{ marginTop: 8 }}>{label ?? 'Unpload'}</div>
         </div>
       );
@@ -274,7 +276,9 @@ const Uploader = (originProps: UploaderProps) => {
       if (listType === 'picture-card') {
         return uploadButton();
       } else {
-        return <Button icon={<PlusOutlined />}>{label ?? 'Unpload'}</Button>;
+        return (
+          <Button icon={icon ?? <PlusOutlined />}>{label ?? 'Unpload'}</Button>
+        );
       }
     };
 
