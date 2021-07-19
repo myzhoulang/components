@@ -1,6 +1,6 @@
 {
   "name": "@zhou.lang/components",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "scripts": {
     "start": "dumi dev",
     "docs:build": "dumi build",
