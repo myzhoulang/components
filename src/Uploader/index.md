@@ -18,6 +18,10 @@ nav:
 
 <code src="./demos/SignFile.tsx" title="单个文件" />
 
+### 自定义上传触发控件
+
+<code src="./demos/CustomUploadControl.tsx" title="自定义上传触发控件" />
+
 ### 自定义请求方法
 
 <code src="./demos/CustomRequest.tsx" title="自定义请求方法" />

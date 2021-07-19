@@ -39,6 +39,7 @@ const Uploader: React.FC<UploaderProps> = (originProps) => {
     valueType,
     previewType,
     icon,
+    children,
   } = props;
 
   const [fileList, setFileList] = useState<Array<UploadFile>>([]);
@@ -284,7 +285,7 @@ const Uploader: React.FC<UploaderProps> = (originProps) => {
 
     return (
       <>
-        <Upload {...props}>{UploadBtn()}</Upload>
+        <Upload {...props}>{children ? children : UploadBtn()}</Upload>
         {previewType === 'modal' ? (
           <Modal
             visible={previewVisible}

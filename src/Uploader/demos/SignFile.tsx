@@ -26,7 +26,9 @@ const SignFile = () => {
           exts={['png', 'jpeg']}
           signSize={200}
           crop={false}
-        />
+        >
+          {}
+        </Uploader>
       </Col>
       <Col span={12}>
         <Uploader
