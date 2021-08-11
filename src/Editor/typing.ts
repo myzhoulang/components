@@ -7,6 +7,17 @@ export type FinshResult = {
   status: 100 | 200 | 400;
   message: string;
 };
+
+export type MediaMetaProps = {
+  id: string;
+  title: string;
+  alt: string;
+  loop: boolean; // 指定音视频是否循环播放
+  autoPlay: boolean; // 指定音视频是否自动播放
+  controls: boolean; // 指定音视频是否显示控制栏
+  poster: string; // 指定视频播放器的封面
+};
+
 export type UploaderProps = UploadProps & {
   customUpload?: (data: any) => Promise<any>;
   // 可上传的文件后缀名
@@ -25,6 +36,8 @@ export type UploaderProps = UploadProps & {
   onSuccess?: (data: any) => void;
   // 上传完成 不管是成功或失败还是取消 都会执行
   onFinsh?: (result: FinshResult, editor: BraftEditor | null) => void;
+  // 媒体标签渲染是的属性
+  mediaMetaProps?: Partial<MediaMetaProps>;
 };
 
 export type EditorProps = {

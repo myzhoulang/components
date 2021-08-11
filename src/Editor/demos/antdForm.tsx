@@ -16,7 +16,7 @@ const tailLayout = {
 const Demo = () => {
   const [uploading, setUploading] = useState(false);
   const [value, setValue] = useState('');
-  const header = new Headers({ token });
+  const header = new Headers({ token: '16ffe693281242438bce6b02309a4e9d' });
   const oss = {
     OSSHeader: header,
     OSSAction: 'http://daily.api.beicaizs.com/compliance/oss/policy',
@@ -32,6 +32,8 @@ const Demo = () => {
     onSuccess(data) {
       console.log('onSuccess', data);
     },
+
+    signSize: 50000000,
     action: 'https://beicai-test.oss-cn-hangzhou.aliyuncs.com',
   };
   // 表单提交
@@ -99,7 +101,7 @@ const Demo = () => {
             media: {
               accepts: {
                 image: 'image/png',
-                video: 'video/x-flv',
+                video: 'video/x-flv, video/mp4',
               },
             },
           }}

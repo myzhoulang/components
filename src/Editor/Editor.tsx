@@ -16,6 +16,17 @@ import { message } from 'antd';
 
 const { getUploadData } = upload;
 
+// 默认的媒体标签属性
+const defaultMediaMetaProps = {
+  id: '',
+  title: '',
+  alt: '',
+  loop: false, // 指定音视频是否循环播放
+  autoPlay: false, // 指定音视频是否自动播放
+  controls: true, // 指定音视频是否显示控制栏
+  poster: '',
+};
+
 const Editor: React.FC<EditorProps> = (props) => {
   const {
     value,
@@ -25,7 +36,8 @@ const Editor: React.FC<EditorProps> = (props) => {
     oss = {},
     sanitize,
   } = props;
-  const { onBeforeStart, onStart, onFinsh } = upload;
+
+  const { onBeforeStart, onStart, onFinsh, mediaMetaProps } = upload;
   const editor = useRef<BraftEditor>(null);
   const editorState = useMemo(() => {
     if (typeof value === 'string') {
@@ -191,18 +203,10 @@ const Editor: React.FC<EditorProps> = (props) => {
         // 上传结束
         onFinsh?.({ status: 200, message: 'ok' }, editor.current);
         upload?.onSuccess?.(xhr.response);
-
+        console.log('=>', Object.assign(defaultMediaMetaProps, mediaMetaProps));
         param.success({
           url: url,
-          meta: {
-            id: '',
-            title: '',
-            alt: '',
-            loop: true, // 指定音视频是否循环播放
-            autoPlay: true, // 指定音视频是否自动播放
-            controls: true, // 指定音视频是否显示控制栏
-            poster: '', // 指定视频播放器的封面
-          },
+          meta: Object.assign(defaultMediaMetaProps, mediaMetaProps),
         });
       }
 
